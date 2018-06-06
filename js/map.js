@@ -126,7 +126,7 @@ var createExpandedAdvert = function (advertOption) {
   var advertPhotos = expandedAdvert.querySelector('.popup__photos');
   var advertAvatar = expandedAdvert.querySelector('.popup__avatar');
 
-  advertTitle.title = advertOption.offer.title;
+  advertTitle.textContent = advertOption.offer.title;
   advertAddress.textContent = advertOption.offer.address;
   advertPrice.textContent = advertOption.offer.price + '₽/ночь.';
 
