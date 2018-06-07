@@ -47,11 +47,11 @@ var getRandomNumber = function (to, from) {
   return randomNumber;
 };
 
-var getRandomElement = function (arr, bool) {
+var getRandomElement = function (arr, getUniqueItem) {
   var elementIndex = getRandomNumber(arr.length - 1);
   var randomElement = arr[elementIndex];
 
-  if (bool) {
+  if (getUniqueItem) {
     arr.splice(elementIndex, 1);
   }
 
@@ -144,7 +144,7 @@ var createExpandedAdvert = function (advertOption) {
       break;
 
     case ('palace'):
-      advertType = 'Дом';
+      advertType = 'Дворец';
       break;
   }
 
