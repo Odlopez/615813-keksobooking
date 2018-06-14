@@ -38,7 +38,6 @@ var PIN_HEIGHT = 70;
 var MAIN_PIN_WIDTH = 65;
 var MAIN_PIN_HEIGHT = 84;
 var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
 
 var mainPin = document.querySelector('.map__pin--main');
 var template = document.querySelector('template');
@@ -68,7 +67,7 @@ var getRandomNumber = function (to, from) {
  * Возвращает случайный элемент массива
  * @param {Array} arr - массив, из которого необходимо выбрать случайный элемент
  * @param {boolean} getUniqueItem - определяет, вырезать или копировать выбранный элемент из изсходного массива
- * @return {Array<element>}
+ * @return {Array<any>}
  */
 var getRandomElement = function (arr, getUniqueItem) {
   var elementIndex = getRandomNumber(arr.length - 1);
@@ -98,40 +97,6 @@ var getRandomElements = function (arr, count) {
 
   return resultArray;
 };
-
-/**
- * @typedef {Object} author
- * @property {string} avatar
- */
-
-/**
- * @typedef {Object} location
- * @property {number} x
- * @property {number} y
- */
-
-/**
- * @typedef {Object} offer
- * @property {string} title
- * @property {string} adress
- * @property {number} price
- * @property {string} type
- * @property {number} rooms
- * @property {number} guests
- * @property {string} checkin
- * @property {string} checkout
- * @property {Array.<string>} features
- * @property {string} description
- * @property {Array.<string>} photos
- */
-
-/**
- * @typedef {Object} advert
- * @property {author}
- * @property {offer}
- * @property {location}
- * @property {undefined} element
- */
 
 /**
  * Генерирует объект данных для создания объявления
@@ -219,10 +184,9 @@ var createsSimilarAdverts = function () {
  * Генерирует развернутое объявление
  * @param {Array.<advert>} advertOption
  * @param {function} funcClick - функция для обработчика событий при клике на кнопку закрытия
- * @param {function} funcPress - функция для обработчика событий при нажатии клавишой Enter на кнопку закрытия
  * @return {Node}
  */
-var createExpandedAdvert = function (advertOption, funcClick, funcPress) {
+var createExpandedAdvert = function (advertOption, funcClick) {
   var expandedAdvert = mapCard.cloneNode(true);
   var advertTitle = expandedAdvert.querySelector('.popup__title');
   var advertAddress = expandedAdvert.querySelector('.popup__text--address');
@@ -284,7 +248,6 @@ var createExpandedAdvert = function (advertOption, funcClick, funcPress) {
   advertAvatar.src = advertOption.author.avatar;
 
   advertButtonClose.addEventListener('click', funcClick);
-  advertButtonClose.addEventListener('keydown', funcPress);
 
   return expandedAdvert;
 };
@@ -330,9 +293,15 @@ var onMainPinMouseup = function () {
 var deleteEpandedAdvert = function () {
   var expandedAdvert = map.querySelector('.map__card');
 
-  for (var i = map.children.length - 1; i > 0; i--) {
-    if (map.children[i] === expandedAdvert) {
-      map.removeChild(map.children[i]);
+  if (expandedAdvert) {
+    var advertButtonClose = expandedAdvert.querySelector('.popup__close');
+
+    advertButtonClose.removeEventListener('click', onAdvertButtonCloseClick);
+
+    for (var i = map.children.length - 1; i > 0; i--) {
+      if (map.children[i] === expandedAdvert) {
+        map.removeChild(map.children[i]);
+      }
     }
   }
 };
@@ -342,16 +311,6 @@ var deleteEpandedAdvert = function () {
  */
 var onAdvertButtonCloseClick = function () {
   deleteEpandedAdvert();
-};
-
-/**
- * Обработчик события нажатия клавишей Enter на кнопку закрытия развернутого объявления
- * @param {Event} evt
- */
-var onAdvertButtonClosePress = function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    deleteEpandedAdvert();
-  }
 };
 
 /**
@@ -380,7 +339,7 @@ var onPinClick = function (evt) {
 
       var fragment = document.createDocumentFragment();
 
-      fragment.appendChild(createExpandedAdvert(advertOptions[i], onAdvertButtonCloseClick, onAdvertButtonClosePress));
+      fragment.appendChild(createExpandedAdvert(advertOptions[i], onAdvertButtonCloseClick));
       map.insertBefore(fragment, mapContainer);
 
       document.addEventListener('keydown', onDocumentEscPress);
@@ -388,18 +347,7 @@ var onPinClick = function (evt) {
   }
 };
 
-/**
- * Обрабочтик события нажатия клавишей Enter по метке случайного объявления на карте
- * @param {Event} evt
- */
-var onPinPress = function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    onPinClick(evt);
-  }
-};
-
 document.addEventListener('click', onPinClick);
-document.addEventListener('keydown', onPinPress);
 
 disablesChildren(filterForm);
 disablesChildren(userForm);
