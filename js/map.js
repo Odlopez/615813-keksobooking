@@ -33,20 +33,43 @@ var MAX_GUESTS_QUANTYTI = 100;
 var LOCATION_X_COORDINATES = [300, 900];
 var LOCATION_Y_COORDINATES = [130, 630];
 var ADVERTS_QUANTYTI = 8;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 84;
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
+var mainPin = document.querySelector('.map__pin--main');
 var template = document.querySelector('template');
 var map = document.querySelector('.map');
-var mapContainer = map.querySelector('.map__filters-container');
+var filterForm = document.querySelector('.map__filters');
+var userForm = document.querySelector('.ad-form');
+var mapContainer = filterForm.parentElement;
 var mapPin = template.content.querySelector('.map__pin');
 var mapCard = template.content.querySelector('.map__card');
 var mapPins = document.querySelector('.map__pins');
+var userAddressInput = document.querySelector('input[name="address"]');
+var advertOptions = [];
 
+/**
+ * Генерирует случайное число в пределах заданных параметров
+ * @param {number} to - максимальное значение случайного числа
+ * @param {number} from - минимальное значение случайного числа
+ * @return {number}
+ */
 var getRandomNumber = function (to, from) {
   from = from || 0;
-  var randomNumber = Math.round(Math.random() * (to - from) + from);
 
-  return randomNumber;
+  return Math.round(Math.random() * (to - from) + from);
 };
 
+/**
+ * Возвращает случайный элемент массива
+ * @param {Array} arr - массив, из которого необходимо выбрать случайный элемент
+ * @param {boolean} getUniqueItem - определяет, вырезать или копировать выбранный элемент из изсходного массива
+ * @return {Array<element>}
+ */
 var getRandomElement = function (arr, getUniqueItem) {
   var elementIndex = getRandomNumber(arr.length - 1);
   var randomElement = arr[elementIndex];
@@ -58,6 +81,12 @@ var getRandomElement = function (arr, getUniqueItem) {
   return randomElement;
 };
 
+/**
+ * Возвращает массив из заданного количества случайных элементов переданного массива.
+ * @param {Array} arr - исходный массив, из которого необходимо выбрать элементы
+ * @param {number} count - необязательный параметр количества элементов, которые нужно выбрать. По умолчанию равен суммарному количеству элементов.
+ * @return {Array}
+ */
 var getRandomElements = function (arr, count) {
   arr = arr.slice(0);
   count = count || getRandomNumber(arr.length);
@@ -70,11 +99,50 @@ var getRandomElements = function (arr, count) {
   return resultArray;
 };
 
-var getAdvert = function () {
+/**
+ * @typedef {Object} author
+ * @property {string} avatar
+ */
+
+/**
+ * @typedef {Object} location
+ * @property {number} x
+ * @property {number} y
+ */
+
+/**
+ * @typedef {Object} offer
+ * @property {string} title
+ * @property {string} adress
+ * @property {number} price
+ * @property {string} type
+ * @property {number} rooms
+ * @property {number} guests
+ * @property {string} checkin
+ * @property {string} checkout
+ * @property {Array.<string>} features
+ * @property {string} description
+ * @property {Array.<string>} photos
+ */
+
+/**
+ * @typedef {Object} advert
+ * @property {author}
+ * @property {offer}
+ * @property {location}
+ * @property {undefined} element
+ */
+
+/**
+ * Генерирует объект данных для создания объявления
+ * @param {number} num - порядковый номер элемента массива данных
+ * @return {advert}
+ */
+var getAdvert = function (num) {
   var advert = {};
 
   var author = {};
-  author.avatar = getRandomElement(AVATAR_LINKS, true);
+  author.avatar = AVATAR_LINKS[num];
 
   var location = {};
   location.x = getRandomNumber(LOCATION_X_COORDINATES[1], LOCATION_X_COORDINATES[0]);
@@ -93,27 +161,68 @@ var getAdvert = function () {
   offer.description = '';
   offer.photos = getRandomElements(PHOTOS, PHOTOS.length);
 
+  var element;
+
   advert.author = author;
   advert.offer = offer;
   advert.location = location;
+  advert.element = element;
 
   return advert;
 };
 
+/**
+ * Генерирует DOM-елемент метки объявления
+ * @param {advert} adverts - объект с данными для генерации объявления
+ * @return {Node}
+ */
 var createPin = function (adverts) {
   var pin = mapPin.cloneNode(true);
   var pinImage = pin.children[0];
-  var pinWidth = +pinImage.getAttribute('height');
-  var pinHeight = +pinImage.getAttribute('width');
 
-  pin.style = 'left: ' + (adverts.location.x + pinWidth / 2) + 'px; top: ' + (adverts.location.y + pinHeight) + 'px';
+  pin.style = 'left: ' + (adverts.location.x - PIN_WIDTH / 2) + 'px; top: ' + (adverts.location.y - PIN_HEIGHT) + 'px';
   pinImage.src = adverts.author.avatar;
   pinImage.alt = adverts.offer.title;
 
   return pin;
 };
 
-var createExpandedAdvert = function (advertOption) {
+/**
+ * Создает заданное количество меток на карте. Связывает созданный DOM-элемент метки с JS-массивом, описывающим данные текущего объявления
+ */
+var createsSimilarAdverts = function () {
+  advertOptions.length = 0;
+
+  for (var i = 0; i < ADVERTS_QUANTYTI; i++) {
+    advertOptions.push(getAdvert(i));
+  }
+
+  var fragment = document.createDocumentFragment();
+
+  for (i = 0; i < ADVERTS_QUANTYTI; i++) {
+    var pinItem = createPin(advertOptions[i]);
+
+    fragment.appendChild(pinItem);
+    advertOptions[i].element = fragment.lastChild;
+  }
+
+  for (i = mapPins.childElementCount - 1; i > 0; i--) {
+    if (mapPins.children[i] && mapPins.children[i].className === 'map__pin') {
+      mapPins.removeChild(mapPins.children[i]);
+    }
+  }
+
+  mapPins.appendChild(fragment);
+};
+
+/**
+ * Генерирует развернутое объявление
+ * @param {Array.<advert>} advertOption
+ * @param {function} funcClick - функция для обработчика событий при клике на кнопку закрытия
+ * @param {function} funcPress - функция для обработчика событий при нажатии клавишой Enter на кнопку закрытия
+ * @return {Node}
+ */
+var createExpandedAdvert = function (advertOption, funcClick, funcPress) {
   var expandedAdvert = mapCard.cloneNode(true);
   var advertTitle = expandedAdvert.querySelector('.popup__title');
   var advertAddress = expandedAdvert.querySelector('.popup__text--address');
@@ -125,6 +234,7 @@ var createExpandedAdvert = function (advertOption) {
   var advertDescription = expandedAdvert.querySelector('.popup__description');
   var advertPhotos = expandedAdvert.querySelector('.popup__photos');
   var advertAvatar = expandedAdvert.querySelector('.popup__avatar');
+  var advertButtonClose = expandedAdvert.querySelector('.popup__close');
 
   advertTitle.textContent = advertOption.offer.title;
   advertAddress.textContent = advertOption.offer.address;
@@ -143,9 +253,8 @@ var createExpandedAdvert = function (advertOption) {
       advertType = 'Дом';
       break;
 
-    case ('palace'):
+    default:
       advertType = 'Дворец';
-      break;
   }
 
   advertCapacity.textContent = advertOption.offer.rooms + ' комнаты для ' + advertOption.offer.guests + ' гостей';
@@ -174,26 +283,126 @@ var createExpandedAdvert = function (advertOption) {
   advertPhotos.removeChild(advertPhotos.children[0]);
   advertAvatar.src = advertOption.author.avatar;
 
+  advertButtonClose.addEventListener('click', funcClick);
+  advertButtonClose.addEventListener('keydown', funcPress);
+
   return expandedAdvert;
 };
 
-var advertOptions = [];
+/**
+ * Присваивает всем дочерним элементам заданного элемента артибут disabled
+ * @param {Node} element
+ */
+var disablesChildren = function (element) {
+  for (var i = 0; i < element.children.length; i++) {
+    element.children[i].disabled = true;
+  }
+};
 
-for (var i = 0; i < ADVERTS_QUANTYTI; i++) {
-  advertOptions.push(getAdvert());
-}
+/**
+ * Присваивает всем дочерним элементам заданного элемента артибут enabled
+ * @param {Node} element
+ */
+var enablesChildren = function (element) {
+  for (var i = 0; i < element.children.length; i++) {
+    element.children[i].disabled = false;
+  }
+};
 
-map.classList.remove('map--faded');
+/**
+ * Обработчик событий для главной метки на карте
+ */
+var onMainPinMouseup = function () {
+  map.classList.remove('map--faded');
+  userForm.classList.remove('ad-form--disabled');
 
-var fragment = document.createDocumentFragment();
+  enablesChildren(filterForm);
+  enablesChildren(userForm);
 
-for (i = 0; i < ADVERTS_QUANTYTI; i++) {
-  fragment.appendChild(createPin(advertOptions[i]));
-}
+  userAddressInput.value = (parseInt(mainPin.style.left, 10) - MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.style.top, 10) - MAIN_PIN_HEIGHT);
 
-mapPins.appendChild(fragment);
+  createsSimilarAdverts();
+};
 
-fragment.innerHtml = '';
-fragment.appendChild(createExpandedAdvert(advertOptions[0]));
+/**
+ * Удаляет из DOM-дерева развенутое объявление
+ */
+var deleteEpandedAdvert = function () {
+  var expandedAdvert = map.querySelector('.map__card');
 
-map.insertBefore(fragment, mapContainer);
+  for (var i = map.children.length - 1; i > 0; i--) {
+    if (map.children[i] === expandedAdvert) {
+      map.removeChild(map.children[i]);
+    }
+  }
+};
+
+/**
+ * Обработчик события клика на кнопку закрытия развернутого объявления
+ */
+var onAdvertButtonCloseClick = function () {
+  deleteEpandedAdvert();
+};
+
+/**
+ * Обработчик события нажатия клавишей Enter на кнопку закрытия развернутого объявления
+ * @param {Event} evt
+ */
+var onAdvertButtonClosePress = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    deleteEpandedAdvert();
+  }
+};
+
+/**
+ * Обработчик события (для document) нажатия клавищей ESC при открытой развернутом сообщении (закрывает окно и удаляет элемент)
+ * @param {Event} evt
+ */
+var onDocumentEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    deleteEpandedAdvert();
+  }
+};
+
+/**
+ * Обрабочтик события клика по метке случайного объявления на карте
+ * @param {Event} evt
+ */
+var onPinClick = function (evt) {
+  if (!(evt.target.tagName === 'BUTTON' || evt.target.tagName === 'IMG')) {
+    return;
+  }
+
+  for (var i = 0; i < advertOptions.length; i++) {
+
+    if (evt.target.closest('button') === advertOptions[i].element) {
+      deleteEpandedAdvert();
+
+      var fragment = document.createDocumentFragment();
+
+      fragment.appendChild(createExpandedAdvert(advertOptions[i], onAdvertButtonCloseClick, onAdvertButtonClosePress));
+      map.insertBefore(fragment, mapContainer);
+
+      document.addEventListener('keydown', onDocumentEscPress);
+    }
+  }
+};
+
+/**
+ * Обрабочтик события нажатия клавишей Enter по метке случайного объявления на карте
+ * @param {Event} evt
+ */
+var onPinPress = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    onPinClick(evt);
+  }
+};
+
+document.addEventListener('click', onPinClick);
+document.addEventListener('keydown', onPinPress);
+
+disablesChildren(filterForm);
+disablesChildren(userForm);
+userAddressInput.value = (parseInt(mainPin.style.left, 10) - mainPin.offsetWidth / 2) + ', ' + (parseInt(mainPin.style.top, 10) - mainPin.offsetHeight);
+
+mainPin.addEventListener('mouseup', onMainPinMouseup);
