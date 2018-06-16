@@ -30,13 +30,14 @@ var PHOTOS = [
 ];
 var ROOMS_QUANTYTI = [1, 5];
 var MAX_GUESTS_QUANTYTI = 100;
-var LOCATION_X_COORDINATES = [300, 900];
+var LOCATION_X_COORDINATES = [0, 1200];
 var LOCATION_Y_COORDINATES = [130, 630];
+var MAIN_PIN_COORDINATES = [570, 375];
 var ADVERTS_QUANTYTI = 8;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-var MAIN_PIN_WIDTH = 65;
-var MAIN_PIN_HEIGHT = 84;
+var MAIN_PIN_WIDTH = 64;
+var MAIN_PIN_HEIGHT = 83;
 var ESC_KEYCODE = 27;
 
 var mainPin = document.querySelector('.map__pin--main');
@@ -282,21 +283,58 @@ var enablesChildren = function (element) {
 };
 
 /**
- * Обработчик событий для главной метки на карте
+ * Создает функцию для обработчика события перетягивания главной метки
+ * @param {Event} evt
  */
-var onMainPinMouseup = function () {
-  map.classList.remove('map--faded');
-  userForm.classList.remove('ad-form--disabled');
+var onMainPinMousedown = function (evt) {
+  evt.preventDefault();
 
-  deleteEpandedAdvert();
-  enablesChildren(filterForm);
-  enablesChildren(userForm);
-  onTypeSelectChange();
-  onRoomsSelectChange();
+  var shift = {
+    x: evt.clientX - mainPin.offsetLeft,
+    y: evt.clientY - mainPin.offsetTop
+  };
 
-  addressInput.value = (parseInt(mainPin.style.left, 10) - MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.style.top, 10) - MAIN_PIN_HEIGHT);
+  var onMainPinMousemove = function (evtMove) {
+    evtMove.preventDefault();
 
-  createsSimilarAdverts();
+    mainPin.style.top = evtMove.clientY - shift.y + 'px';
+    mainPin.style.left = evtMove.clientX - shift.x + 'px';
+
+    if ((evtMove.clientY - shift.y) < (LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT)) {
+      mainPin.style.top = LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT + 'px';
+    } else if ((evtMove.clientY - shift.y) > (LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT)) {
+      mainPin.style.top = LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT + 'px';
+    }
+
+    if ((evtMove.clientX - shift.x) < (LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2)) {
+      mainPin.style.left = LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2 + 'px';
+    } else if ((evtMove.clientX - shift.x) > (LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2)) {
+      mainPin.style.left = LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2 + 'px';
+    }
+
+    addressInput.value = (parseInt(mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
+  };
+
+  var onMainPinMouseup = function () {
+    map.classList.remove('map--faded');
+    userForm.classList.remove('ad-form--disabled');
+
+    deleteEpandedAdvert();
+    enablesChildren(filterForm);
+    enablesChildren(userForm);
+    onTypeSelectChange();
+    onRoomsSelectChange();
+
+    addressInput.value = (parseInt(mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
+
+    createsSimilarAdverts();
+
+    document.removeEventListener('mousemove', onMainPinMousemove);
+    document.removeEventListener('mouseup', onMainPinMouseup);
+  };
+
+  document.addEventListener('mousemove', onMainPinMousemove);
+  document.addEventListener('mouseup', onMainPinMouseup);
 };
 
 /**
@@ -417,7 +455,6 @@ var onTypeSelectChange = function () {
       priceInput.placeholder = 1000;
       break;
     case ('house'):
-
       priceInput.min = 5000;
       priceInput.value = 5000;
       priceInput.placeholder = 5000;
@@ -484,7 +521,10 @@ var onResetButtonClick = function (evt) {
   userForm.reset();
   filterForm.reset();
 
-  addressInput.value = (parseInt(mainPin.style.left, 10) - MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.style.top, 10) - MAIN_PIN_HEIGHT);
+  mainPin.style.top = MAIN_PIN_COORDINATES[1] + 'px';
+  mainPin.style.left = MAIN_PIN_COORDINATES[0] + 'px';
+  addressInput.value = (parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGHT);
+
   capacitySelect.selectedIndex = 2;
 
   deleteEpandedAdvert();
@@ -506,7 +546,6 @@ disablesChildren(filterForm);
 disablesChildren(userForm);
 
 document.addEventListener('click', onPinClick);
-mainPin.addEventListener('mouseup', onMainPinMouseup);
 userForm.addEventListener('invalid', onFormInvalid, true);
 typeSelect.addEventListener('change', onTypeSelectChange);
 userForm.addEventListener('input', onFormInvalid);
@@ -515,3 +554,4 @@ timeOutSelect.addEventListener('change', onTimeSelectChange);
 roomsSelect.addEventListener('change', onRoomsSelectChange);
 submit.addEventListener('click', onSubmitClick);
 resetButton.addEventListener('click', onResetButtonClick);
+mainPin.addEventListener('mousedown', onMainPinMousedown);
