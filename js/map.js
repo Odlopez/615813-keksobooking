@@ -48,7 +48,16 @@ var mapContainer = filterForm.parentElement;
 var mapPin = template.content.querySelector('.map__pin');
 var mapCard = template.content.querySelector('.map__card');
 var mapPins = document.querySelector('.map__pins');
-var userAddressInput = document.querySelector('input[name="address"]');
+var addressInput = document.querySelector('input[name="address"]');
+var titleInput = userForm.querySelector('input[name="title"]');
+var priceInput = userForm.querySelector('input[name="price"]');
+var typeSelect = userForm.querySelector('select[name="type"]');
+var timeInSelect = userForm.querySelector('select[name="timein"]');
+var timeOutSelect = userForm.querySelector('select[name="timeout"]');
+var roomsSelect = userForm.querySelector('select[name="rooms"]');
+var capacitySelect = userForm.querySelector('select[name="capacity"]');
+var submit = userForm.querySelector('.ad-form__submit');
+var resetButton = userForm.querySelector('.ad-form__reset');
 var advertOptions = [];
 
 /**
@@ -279,10 +288,13 @@ var onMainPinMouseup = function () {
   map.classList.remove('map--faded');
   userForm.classList.remove('ad-form--disabled');
 
+  deleteEpandedAdvert();
   enablesChildren(filterForm);
   enablesChildren(userForm);
+  onTypeSelectChange();
+  onRoomsSelectChange();
 
-  userAddressInput.value = (parseInt(mainPin.style.left, 10) - MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.style.top, 10) - MAIN_PIN_HEIGHT);
+  addressInput.value = (parseInt(mainPin.style.left, 10) - MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.style.top, 10) - MAIN_PIN_HEIGHT);
 
   createsSimilarAdverts();
 };
@@ -297,6 +309,7 @@ var deleteEpandedAdvert = function () {
     var advertButtonClose = expandedAdvert.querySelector('.popup__close');
 
     advertButtonClose.removeEventListener('click', onAdvertButtonCloseClick);
+    document.removeEventListener('keydown', onDocumentEscPress);
 
     for (var i = map.children.length - 1; i > 0; i--) {
       if (map.children[i] === expandedAdvert) {
@@ -347,10 +360,158 @@ var onPinClick = function (evt) {
   }
 };
 
-document.addEventListener('click', onPinClick);
+/**
+ * Создает сообщение об ошибке, при некорректном заполнении поля с заголовком объявления
+ * @param {Node} input
+ */
+var getMessageErrorInputTitle = function (input) {
+  if (input.validity.tooShort) {
+    input.setCustomValidity('Сообщение должно быть не менее 30 символов');
+  } else if (input.validity.tooLong) {
+    input.setCustomValidity('Сообщение должно быть не более 100 символов');
+  } else if (input.validity.valueMissing) {
+    input.setCustomValidity('Сообщение не должно быть пустым');
+  } else {
+    input.setCustomValidity('');
+  }
+};
+
+/**
+ * Создает сообщение об ошибке, при некорректном заполнении поля со стоимостью жилья
+ * @param {Node} input
+ */
+var getMessageErrorInputPrice = function (input) {
+  if (input.validity.rangeUnderflow) {
+    input.setCustomValidity('Стоимость должна быть не ниже ' + input.min);
+  } else if (input.validity.rangeOverflow) {
+    input.setCustomValidity('Стоимость должна быть не выше 1000000');
+  } else if (input.validity.valueMissing) {
+    input.setCustomValidity('Введите цену');
+  } else {
+    input.setCustomValidity('');
+  }
+};
+
+/**
+ * Создает функцию для обработчика события попытки отправить невалидную форму
+ * @param {Event} evt
+ */
+var onFormInvalid = function (evt) {
+  switch (evt.target) {
+    case (titleInput):
+      getMessageErrorInputTitle(evt.target);
+      break;
+    case (priceInput):
+      getMessageErrorInputPrice(evt.target);
+  }
+};
+
+/**
+ * Создает функцию для обработчика события изменения типа жилья.
+ */
+var onTypeSelectChange = function () {
+  switch (typeSelect.value) {
+    case ('flat'):
+      priceInput.min = 1000;
+      priceInput.value = 1000;
+      priceInput.placeholder = 1000;
+      break;
+    case ('house'):
+
+      priceInput.min = 5000;
+      priceInput.value = 5000;
+      priceInput.placeholder = 5000;
+      break;
+    case ('palace'):
+      priceInput.min = 10000;
+      priceInput.value = 10000;
+      priceInput.placeholder = 10000;
+      break;
+    default:
+      priceInput.min = 0;
+      priceInput.value = 0;
+      priceInput.placeholder = 0;
+  }
+};
+
+/**
+ * Создает функцию для обработчика событий, при изменении поля со временем выезда/заезда
+ * @param {Event} evt
+ */
+var onTimeSelectChange = function (evt) {
+  var changeInput = (evt.target === timeInSelect) ? timeOutSelect : timeInSelect;
+
+  for (var i = 0; i < changeInput.children.length; i++) {
+    if (changeInput.children[i].value === evt.target.value) {
+      changeInput.children[i].selected = 'true';
+    }
+  }
+};
+
+/**
+ * Создает функцию обработчика событий, при изменении поля количества комнат
+ */
+var onRoomsSelectChange = function () {
+  var value = (roomsSelect.value === '100') ? '0' : roomsSelect.value;
+  for (var i = 0; i < capacitySelect.children.length; i++) {
+    if (capacitySelect.children[i].value > value) {
+      capacitySelect.children[i].style.display = 'none';
+    } else {
+      capacitySelect.children[i].style.display = 'initial';
+    }
+
+    if (capacitySelect.children[i].value === '0') {
+      capacitySelect.children[i].style.display = (value === '0') ? 'initial' : 'none';
+      capacitySelect.selectedIndex = (value === '0') ? 3 : 2;
+    }
+  }
+};
+
+/**
+ * Создает функцию обработчика событий, при отправлении формы
+ */
+var onSubmitClick = function () {
+  addressInput.disabled = false;
+};
+
+/**
+ * Создает функцию обработчика событий, при очистке формы пользователя
+ * @param {Event} evt
+ */
+var onResetButtonClick = function (evt) {
+  evt.preventDefault();
+
+  userForm.reset();
+  filterForm.reset();
+
+  addressInput.value = (parseInt(mainPin.style.left, 10) - MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.style.top, 10) - MAIN_PIN_HEIGHT);
+  capacitySelect.selectedIndex = 2;
+
+  deleteEpandedAdvert();
+
+  var pins = mapPins.querySelectorAll('.map__pin');
+
+  for (var i = pins.length - 1; i > 0; i--) {
+    if (pins[i] !== mainPin) {
+      mapPins.removeChild(pins[i]);
+    }
+  }
+
+  map.classList.add('map--faded');
+  userForm.classList.add('ad-form--disabled');
+  disablesChildren(userForm);
+};
 
 disablesChildren(filterForm);
 disablesChildren(userForm);
-userAddressInput.value = (parseInt(mainPin.style.left, 10) - mainPin.offsetWidth / 2) + ', ' + (parseInt(mainPin.style.top, 10) - mainPin.offsetHeight);
 
+document.addEventListener('click', onPinClick);
 mainPin.addEventListener('mouseup', onMainPinMouseup);
+userForm.addEventListener('invalid', onFormInvalid, true);
+typeSelect.addEventListener('change', onTypeSelectChange);
+userForm.addEventListener('input', onFormInvalid);
+timeInSelect.addEventListener('change', onTimeSelectChange);
+timeOutSelect.addEventListener('change', onTimeSelectChange);
+roomsSelect.addEventListener('change', onRoomsSelectChange);
+submit.addEventListener('click', onSubmitClick);
+resetButton.addEventListener('click', onResetButtonClick);
