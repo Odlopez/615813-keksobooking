@@ -40,27 +40,6 @@ var MAIN_PIN_WIDTH = 64;
 var MAIN_PIN_HEIGHT = 83;
 var ESC_KEYCODE = 27;
 
-var mainPin = document.querySelector('.map__pin--main');
-var template = document.querySelector('template');
-var map = document.querySelector('.map');
-var filterForm = document.querySelector('.map__filters');
-var userForm = document.querySelector('.ad-form');
-var mapContainer = filterForm.parentElement;
-var mapPin = template.content.querySelector('.map__pin');
-var mapCard = template.content.querySelector('.map__card');
-var mapPins = document.querySelector('.map__pins');
-var addressInput = document.querySelector('input[name="address"]');
-var titleInput = userForm.querySelector('input[name="title"]');
-var priceInput = userForm.querySelector('input[name="price"]');
-var typeSelect = userForm.querySelector('select[name="type"]');
-var timeInSelect = userForm.querySelector('select[name="timein"]');
-var timeOutSelect = userForm.querySelector('select[name="timeout"]');
-var roomsSelect = userForm.querySelector('select[name="rooms"]');
-var capacitySelect = userForm.querySelector('select[name="capacity"]');
-var submit = userForm.querySelector('.ad-form__submit');
-var resetButton = userForm.querySelector('.ad-form__reset');
-var advertOptions = [];
-
 /**
  * Генерирует случайное число в пределах заданных параметров
  * @param {number} to - максимальное значение случайного числа
@@ -152,7 +131,7 @@ var getAdvert = function (num) {
  * @return {Node}
  */
 var createPin = function (adverts) {
-  var pin = mapPin.cloneNode(true);
+  var pin = window.elements.mapPin.cloneNode(true);
   var pinImage = pin.children[0];
 
   pin.style = 'left: ' + (adverts.location.x - PIN_WIDTH / 2) + 'px; top: ' + (adverts.location.y - PIN_HEIGHT) + 'px';
@@ -166,28 +145,28 @@ var createPin = function (adverts) {
  * Создает заданное количество меток на карте. Связывает созданный DOM-элемент метки с JS-массивом, описывающим данные текущего объявления
  */
 var createsSimilarAdverts = function () {
-  advertOptions.length = 0;
+  window.elements.advertOptions.length = 0;
 
   for (var i = 0; i < ADVERTS_QUANTYTI; i++) {
-    advertOptions.push(getAdvert(i));
+    window.elements.advertOptions.push(getAdvert(i));
   }
 
   var fragment = document.createDocumentFragment();
 
   for (i = 0; i < ADVERTS_QUANTYTI; i++) {
-    var pinItem = createPin(advertOptions[i]);
+    var pinItem = createPin(window.elements.advertOptions[i]);
 
     fragment.appendChild(pinItem);
-    advertOptions[i].element = fragment.lastChild;
+    window.elements.advertOptions[i].element = fragment.lastChild;
   }
 
-  for (i = mapPins.childElementCount - 1; i > 0; i--) {
-    if (mapPins.children[i] && mapPins.children[i].className === 'map__pin') {
-      mapPins.removeChild(mapPins.children[i]);
+  for (i = window.elements.mapPins.childElementCount - 1; i > 0; i--) {
+    if (window.elements.mapPins.children[i] && window.elements.mapPins.children[i].className === 'map__pin') {
+      window.elements.mapPins.removeChild(window.elements.mapPins.children[i]);
     }
   }
 
-  mapPins.appendChild(fragment);
+  window.elements.mapPins.appendChild(fragment);
 };
 
 /**
@@ -197,7 +176,7 @@ var createsSimilarAdverts = function () {
  * @return {Node}
  */
 var createExpandedAdvert = function (advertOption, funcClick) {
-  var expandedAdvert = mapCard.cloneNode(true);
+  var expandedAdvert = window.elements.mapCard.cloneNode(true);
   var advertTitle = expandedAdvert.querySelector('.popup__title');
   var advertAddress = expandedAdvert.querySelector('.popup__text--address');
   var advertPrice = expandedAdvert.querySelector('.popup__text--price');
@@ -290,46 +269,46 @@ var onMainPinMousedown = function (evt) {
   evt.preventDefault();
 
   var shift = {
-    x: evt.clientX - mainPin.offsetLeft,
-    y: evt.clientY - mainPin.offsetTop
+    x: evt.clientX - window.elements.mainPin.offsetLeft,
+    y: evt.clientY - window.elements.mainPin.offsetTop
   };
 
   var onMainPinMousemove = function (evtMove) {
     evtMove.preventDefault();
 
-    mainPin.style.top = evtMove.clientY - shift.y + 'px';
-    mainPin.style.left = evtMove.clientX - shift.x + 'px';
+    window.elements.mainPin.style.top = evtMove.clientY - shift.y + 'px';
+    window.elements.mainPin.style.left = evtMove.clientX - shift.x + 'px';
 
     if ((evtMove.clientY - shift.y) < (LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT)) {
-      mainPin.style.top = LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT + 'px';
+      window.elements.mainPin.style.top = LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT + 'px';
     } else if ((evtMove.clientY - shift.y) > (LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT)) {
-      mainPin.style.top = LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT + 'px';
+      window.elements.mainPin.style.top = LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT + 'px';
     }
 
     if ((evtMove.clientX - shift.x) < (LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2)) {
-      mainPin.style.left = LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2 + 'px';
+      window.elements.mainPin.style.left = LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2 + 'px';
     } else if ((evtMove.clientX - shift.x) > (LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2)) {
-      mainPin.style.left = LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2 + 'px';
+      window.elements.mainPin.style.left = LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2 + 'px';
     }
 
-    addressInput.value = (parseInt(mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
+    window.elements.addressInput.value = (parseInt(window.elements.mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(window.elements.mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
   };
 
   var onMainPinMouseup = function () {
-    if (map.classList.contains('map--faded')) {
-      map.classList.remove('map--faded');
-      userForm.classList.remove('ad-form--disabled');
+    if (window.elements.map.classList.contains('map--faded')) {
+      window.elements.map.classList.remove('map--faded');
+      window.elements.userForm.classList.remove('ad-form--disabled');
 
       deleteEpandedAdvert();
-      enablesChildren(filterForm);
-      enablesChildren(userForm);
+      enablesChildren(window.elements.filterForm);
+      enablesChildren(window.elements.userForm);
       onTypeSelectChange();
       onRoomsSelectChange();
 
       createsSimilarAdverts();
     }
 
-    addressInput.value = (parseInt(mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
+    window.elements.addressInput.value = (parseInt(window.elements.mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(window.elements.mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
 
     document.removeEventListener('mousemove', onMainPinMousemove);
     document.removeEventListener('mouseup', onMainPinMouseup);
@@ -343,7 +322,7 @@ var onMainPinMousedown = function (evt) {
  * Удаляет из DOM-дерева развенутое объявление
  */
 var deleteEpandedAdvert = function () {
-  var expandedAdvert = map.querySelector('.map__card');
+  var expandedAdvert = window.elements.map.querySelector('.map__card');
 
   if (expandedAdvert) {
     var advertButtonClose = expandedAdvert.querySelector('.popup__close');
@@ -351,9 +330,9 @@ var deleteEpandedAdvert = function () {
     advertButtonClose.removeEventListener('click', onAdvertButtonCloseClick);
     document.removeEventListener('keydown', onDocumentEscPress);
 
-    for (var i = map.children.length - 1; i > 0; i--) {
-      if (map.children[i] === expandedAdvert) {
-        map.removeChild(map.children[i]);
+    for (var i = window.elements.map.children.length - 1; i > 0; i--) {
+      if (window.elements.map.children[i] === expandedAdvert) {
+        window.elements.map.removeChild(window.elements.map.children[i]);
       }
     }
   }
@@ -385,15 +364,15 @@ var onPinClick = function (evt) {
     return;
   }
 
-  for (var i = 0; i < advertOptions.length; i++) {
+  for (var i = 0; i < window.elements.advertOptions.length; i++) {
 
-    if (evt.target.closest('button') === advertOptions[i].element) {
+    if (evt.target.closest('button') === window.elements.advertOptions[i].element) {
       deleteEpandedAdvert();
 
       var fragment = document.createDocumentFragment();
 
-      fragment.appendChild(createExpandedAdvert(advertOptions[i], onAdvertButtonCloseClick));
-      map.insertBefore(fragment, mapContainer);
+      fragment.appendChild(createExpandedAdvert(window.elements.advertOptions[i], onAdvertButtonCloseClick));
+      window.elements.map.insertBefore(fragment, window.elements.mapContainer);
 
       document.addEventListener('keydown', onDocumentEscPress);
     }
@@ -438,10 +417,10 @@ var getMessageErrorInputPrice = function (input) {
  */
 var onFormInvalid = function (evt) {
   switch (evt.target) {
-    case (titleInput):
+    case (window.elements.titleInput):
       getMessageErrorInputTitle(evt.target);
       break;
-    case (priceInput):
+    case (window.elements.priceInput):
       getMessageErrorInputPrice(evt.target);
   }
 };
@@ -450,26 +429,26 @@ var onFormInvalid = function (evt) {
  * Создает функцию для обработчика события изменения типа жилья.
  */
 var onTypeSelectChange = function () {
-  switch (typeSelect.value) {
+  switch (window.elements.typeSelect.value) {
     case ('flat'):
-      priceInput.min = 1000;
-      priceInput.value = 1000;
-      priceInput.placeholder = 1000;
+      window.elements.priceInput.min = 1000;
+      window.elements.priceInput.value = 1000;
+      window.elements.priceInput.placeholder = 1000;
       break;
     case ('house'):
-      priceInput.min = 5000;
-      priceInput.value = 5000;
-      priceInput.placeholder = 5000;
+      window.elements.priceInput.min = 5000;
+      window.elements.priceInput.value = 5000;
+      window.elements.priceInput.placeholder = 5000;
       break;
     case ('palace'):
-      priceInput.min = 10000;
-      priceInput.value = 10000;
-      priceInput.placeholder = 10000;
+      window.elements.priceInput.min = 10000;
+      window.elements.priceInput.value = 10000;
+      window.elements.priceInput.placeholder = 10000;
       break;
     default:
-      priceInput.min = 0;
-      priceInput.value = 0;
-      priceInput.placeholder = 0;
+      window.elements.priceInput.min = 0;
+      window.elements.priceInput.value = 0;
+      window.elements.priceInput.placeholder = 0;
   }
 };
 
@@ -478,7 +457,7 @@ var onTypeSelectChange = function () {
  * @param {Event} evt
  */
 var onTimeSelectChange = function (evt) {
-  var changeInput = (evt.target === timeInSelect) ? timeOutSelect : timeInSelect;
+  var changeInput = (evt.target === window.elements.timeInSelect) ? window.elements.timeOutSelect : window.elements.timeInSelect;
 
   for (var i = 0; i < changeInput.children.length; i++) {
     if (changeInput.children[i].value === evt.target.value) {
@@ -491,17 +470,17 @@ var onTimeSelectChange = function (evt) {
  * Создает функцию обработчика событий, при изменении поля количества комнат
  */
 var onRoomsSelectChange = function () {
-  var value = (roomsSelect.value === '100') ? '0' : roomsSelect.value;
-  for (var i = 0; i < capacitySelect.children.length; i++) {
-    if (capacitySelect.children[i].value > value) {
-      capacitySelect.children[i].style.display = 'none';
+  var value = (window.elements.roomsSelect.value === '100') ? '0' : window.elements.roomsSelect.value;
+  for (var i = 0; i < window.elements.capacitySelect.children.length; i++) {
+    if (window.elements.capacitySelect.children[i].value > value) {
+      window.elements.capacitySelect.children[i].style.display = 'none';
     } else {
-      capacitySelect.children[i].style.display = 'initial';
+      window.elements.capacitySelect.children[i].style.display = 'initial';
     }
 
-    if (capacitySelect.children[i].value === '0') {
-      capacitySelect.children[i].style.display = (value === '0') ? 'initial' : 'none';
-      capacitySelect.selectedIndex = (value === '0') ? 3 : 2;
+    if (window.elements.capacitySelect.children[i].value === '0') {
+      window.elements.capacitySelect.children[i].style.display = (value === '0') ? 'initial' : 'none';
+      window.elements.capacitySelect.selectedIndex = (value === '0') ? 3 : 2;
     }
   }
 };
@@ -510,7 +489,7 @@ var onRoomsSelectChange = function () {
  * Создает функцию обработчика событий, при отправлении формы
  */
 var onSubmitClick = function () {
-  addressInput.disabled = false;
+  window.elements.addressInput.disabled = false;
 };
 
 /**
@@ -520,40 +499,40 @@ var onSubmitClick = function () {
 var onResetButtonClick = function (evt) {
   evt.preventDefault();
 
-  userForm.reset();
-  filterForm.reset();
+  window.elements.userForm.reset();
+  window.elements.filterForm.reset();
 
-  mainPin.style.top = MAIN_PIN_COORDINATES[1] + 'px';
-  mainPin.style.left = MAIN_PIN_COORDINATES[0] + 'px';
-  addressInput.value = (parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGHT);
+  window.elements.mainPin.style.top = MAIN_PIN_COORDINATES[1] + 'px';
+  window.elements.mainPin.style.left = MAIN_PIN_COORDINATES[0] + 'px';
+  window.elements.addressInput.value = (parseInt(window.elements.mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(window.elements.mainPin.style.top, 10) + MAIN_PIN_HEIGHT);
 
-  capacitySelect.selectedIndex = 2;
+  window.elements.capacitySelect.selectedIndex = 2;
 
   deleteEpandedAdvert();
 
-  var pins = mapPins.querySelectorAll('.map__pin');
+  var pins = window.elements.mapPins.querySelectorAll('.map__pin');
 
   for (var i = pins.length - 1; i > 0; i--) {
-    if (pins[i] !== mainPin) {
-      mapPins.removeChild(pins[i]);
+    if (pins[i] !== window.elements.mainPin) {
+      window.elements.mapPins.removeChild(pins[i]);
     }
   }
 
-  map.classList.add('map--faded');
-  userForm.classList.add('ad-form--disabled');
-  disablesChildren(userForm);
+  window.elements.map.classList.add('map--faded');
+  window.elements.userForm.classList.add('ad-form--disabled');
+  disablesChildren(window.elements.userForm);
 };
 
-disablesChildren(filterForm);
-disablesChildren(userForm);
+disablesChildren(window.elements.filterForm);
+disablesChildren(window.elements.userForm);
 
 document.addEventListener('click', onPinClick);
-userForm.addEventListener('invalid', onFormInvalid, true);
-typeSelect.addEventListener('change', onTypeSelectChange);
-userForm.addEventListener('input', onFormInvalid);
-timeInSelect.addEventListener('change', onTimeSelectChange);
-timeOutSelect.addEventListener('change', onTimeSelectChange);
-roomsSelect.addEventListener('change', onRoomsSelectChange);
-submit.addEventListener('click', onSubmitClick);
-resetButton.addEventListener('click', onResetButtonClick);
-mainPin.addEventListener('mousedown', onMainPinMousedown);
+window.elements.userForm.addEventListener('invalid', onFormInvalid, true);
+window.elements.typeSelect.addEventListener('change', onTypeSelectChange);
+window.elements.userForm.addEventListener('input', onFormInvalid);
+window.elements.timeInSelect.addEventListener('change', onTimeSelectChange);
+window.elements.timeOutSelect.addEventListener('change', onTimeSelectChange);
+window.elements.roomsSelect.addEventListener('change', onRoomsSelectChange);
+window.elements.submit.addEventListener('click', onSubmitClick);
+window.elements.resetButton.addEventListener('click', onResetButtonClick);
+window.elements.mainPin.addEventListener('mousedown', onMainPinMousedown);
