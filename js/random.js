@@ -48,11 +48,9 @@
     return resultArray;
   };
 
-  var random = {
+  window.random = {
     number: getRandomNumber,
     element: getRandomElement,
     elements: getRandomElements
   };
-
-  window.random = random;
 })();

@@ -4,6 +4,7 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var ADVERTS_QUANTYTI = 8;
+  var advertOptions = [];
 
   /**
    * Генерирует DOM-елемент метки объявления
@@ -11,7 +12,9 @@
    * @return {Node}
    */
   var createPin = function (adverts) {
-    var pin = window.elements.mapPin.cloneNode(true);
+    var template = document.querySelector('template');
+    var mapPin = template.content.querySelector('.map__pin');
+    var pin = mapPin.cloneNode(true);
     var pinImage = pin.children[0];
 
     pin.style = 'left: ' + (adverts.location.x - PIN_WIDTH / 2) + 'px; top: ' + (adverts.location.y - PIN_HEIGHT) + 'px';
@@ -25,32 +28,35 @@
    * Создает заданное количество меток на карте. Связывает созданный DOM-элемент метки с JS-массивом, описывающим данные текущего объявления
    */
   var createsSimilarAdverts = function () {
-    window.elements.advertOptions.length = 0;
+    advertOptions.length = 0;
+
+    var mapPins = document.querySelector('.map__pins');
 
     for (var i = 0; i < ADVERTS_QUANTYTI; i++) {
-      window.elements.advertOptions.push(window.data.getAdvert(i));
+      advertOptions.push(window.data.getAdvert(i));
     }
 
     var fragment = document.createDocumentFragment();
 
     for (i = 0; i < ADVERTS_QUANTYTI; i++) {
-      var pinItem = createPin(window.elements.advertOptions[i]);
+      var pinItem = createPin(advertOptions[i]);
 
       fragment.appendChild(pinItem);
-      window.elements.advertOptions[i].element = fragment.lastChild;
+      advertOptions[i].element = fragment.lastChild;
     }
 
-    for (i = window.elements.mapPins.childElementCount - 1; i > 0; i--) {
-      if (window.elements.mapPins.children[i] && window.elements.mapPins.children[i].className === 'map__pin') {
-        window.elements.mapPins.removeChild(window.elements.mapPins.children[i]);
+    for (i = mapPins.childElementCount - 1; i > 0; i--) {
+      if (mapPins.children[i] && mapPins.children[i].className === 'map__pin') {
+        mapPins.removeChild(mapPins.children[i]);
       }
     }
 
-    window.elements.mapPins.appendChild(fragment);
+    mapPins.appendChild(fragment);
   };
 
   var pin = {
-    create: createsSimilarAdverts
+    create: createsSimilarAdverts,
+    advertOptions: advertOptions
   };
 
   window.pin = pin;

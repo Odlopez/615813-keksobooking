@@ -9,7 +9,9 @@
    * @return {Node}
    */
   var createExpandedAdvert = function (advertOption, funcClick) {
-    var expandedAdvert = window.elements.mapCard.cloneNode(true);
+    var template = document.querySelector('template');
+    var mapCard = template.content.querySelector('.map__card');
+    var expandedAdvert = mapCard.cloneNode(true);
     var advertTitle = expandedAdvert.querySelector('.popup__title');
     var advertAddress = expandedAdvert.querySelector('.popup__text--address');
     var advertPrice = expandedAdvert.querySelector('.popup__text--price');
@@ -78,7 +80,8 @@
    * Удаляет из DOM-дерева развенутое объявление
    */
   var deleteEpandedAdvert = function () {
-    var expandedAdvert = window.elements.map.querySelector('.map__card');
+    var map = document.querySelector('.map');
+    var expandedAdvert = map.querySelector('.map__card');
 
     if (expandedAdvert) {
       var advertButtonClose = expandedAdvert.querySelector('.popup__close');
@@ -86,9 +89,9 @@
       advertButtonClose.removeEventListener('click', window.map.onAdvertButtonCloseClick);
       document.removeEventListener('keydown', window.map.onDocumentEscPress);
 
-      for (var i = window.elements.map.children.length - 1; i > 0; i--) {
-        if (window.elements.map.children[i] === expandedAdvert) {
-          window.elements.map.removeChild(window.elements.map.children[i]);
+      for (var i = map.children.length - 1; i > 0; i--) {
+        if (map.children[i] === expandedAdvert) {
+          map.removeChild(map.children[i]);
         }
       }
     }

@@ -41,6 +41,7 @@
    */
   var getAdvert = function (num) {
     var advert = {};
+    var titles = TITLES.slice(0);
 
     var author = {};
     author.avatar = AVATAR_LINKS[num];
@@ -50,7 +51,7 @@
     location.y = window.random.number(LOCATION_Y_COORDINATES[1], LOCATION_Y_COORDINATES[0]);
 
     var offer = {};
-    offer.title = window.random.element(TITLES, true);
+    offer.title = window.random.element(titles, true);
     offer.address = location.x + ', ' + location.y;
     offer.price = window.random.number(1000000, 1000);
     offer.type = window.random.element(TYPES);

@@ -6,6 +6,9 @@
   var LOCATION_Y_COORDINATES = [130, 630];
   var MAIN_PIN_WIDTH = 64;
   var MAIN_PIN_HEIGHT = 83;
+  var map = document.querySelector('.map');
+  var mainPin = document.querySelector('.map__pin--main');
+  var addressInput = document.querySelector('input[name="address"]');
 
   /**
    * Создает функцию для обработчика события перетягивания главной метки
@@ -15,46 +18,49 @@
     evt.preventDefault();
 
     var shift = {
-      x: evt.clientX - window.elements.mainPin.offsetLeft,
-      y: evt.clientY - window.elements.mainPin.offsetTop
+      x: evt.clientX - mainPin.offsetLeft,
+      y: evt.clientY - mainPin.offsetTop
     };
 
     var onMainPinMousemove = function (evtMove) {
       evtMove.preventDefault();
 
-      window.elements.mainPin.style.top = evtMove.clientY - shift.y + 'px';
-      window.elements.mainPin.style.left = evtMove.clientX - shift.x + 'px';
+      mainPin.style.top = evtMove.clientY - shift.y + 'px';
+      mainPin.style.left = evtMove.clientX - shift.x + 'px';
 
       if ((evtMove.clientY - shift.y) < (LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT)) {
-        window.elements.mainPin.style.top = LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT + 'px';
+        mainPin.style.top = LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT + 'px';
       } else if ((evtMove.clientY - shift.y) > (LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT)) {
-        window.elements.mainPin.style.top = LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT + 'px';
+        mainPin.style.top = LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT + 'px';
       }
 
       if ((evtMove.clientX - shift.x) < (LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2)) {
-        window.elements.mainPin.style.left = LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2 + 'px';
+        mainPin.style.left = LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2 + 'px';
       } else if ((evtMove.clientX - shift.x) > (LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2)) {
-        window.elements.mainPin.style.left = LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2 + 'px';
+        mainPin.style.left = LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2 + 'px';
       }
 
-      window.elements.addressInput.value = (parseInt(window.elements.mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(window.elements.mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
+      getAddressValue(mainPin);
     };
 
     var onMainPinMouseup = function () {
-      if (window.elements.map.classList.contains('map--faded')) {
-        window.elements.map.classList.remove('map--faded');
-        window.elements.userForm.classList.remove('ad-form--disabled');
+      if (map.classList.contains('map--faded')) {
+        var filterForm = document.querySelector('.map__filters');
+        var userForm = document.querySelector('.ad-form');
+
+        map.classList.remove('map--faded');
+        userForm.classList.remove('ad-form--disabled');
 
         window.card.delete();
-        window.form.enables(window.elements.filterForm);
-        window.form.enables(window.elements.userForm);
+        window.form.enables(filterForm);
+        window.form.enables(userForm);
         window.form.onTypeSelectChange();
         window.form.onRoomsSelectChange();
 
         window.pin.create();
       }
 
-      window.elements.addressInput.value = (parseInt(window.elements.mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(window.elements.mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
+      getAddressValue(mainPin);
 
       document.removeEventListener('mousemove', onMainPinMousemove);
       document.removeEventListener('mouseup', onMainPinMouseup);
@@ -62,6 +68,28 @@
 
     document.addEventListener('mousemove', onMainPinMousemove);
     document.addEventListener('mouseup', onMainPinMouseup);
+  };
+
+  /**
+   * Записывает координаты главной метки (передаваемый аргумент) в поле "Адрес" формы создания объявления
+   * @param {Node} elem
+   */
+  var getAddressValue = function (elem) {
+    addressInput.value = (parseInt(elem.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(elem.offsetTop, 10) + MAIN_PIN_HEIGHT);
+  };
+
+  /**
+   * Удаляет атрибут disabled у поля "Адрес" формы создания объявления
+   */
+  var enablesAddressInput = function () {
+    addressInput.disabled = false;
+  };
+
+  /**
+   * Вставляет атрибут disabled у поля "Адрес" формы создания объявления
+   */
+  var disablesAddressInput = function () {
+    addressInput.disabled = true;
   };
 
   /**
@@ -73,15 +101,17 @@
       return;
     }
 
-    for (var i = 0; i < window.elements.advertOptions.length; i++) {
+    var mapContainer = document.querySelector('.map__filters-container');
 
-      if (evt.target.closest('button') === window.elements.advertOptions[i].element) {
+    for (var i = 0; i < window.pin.advertOptions.length; i++) {
+
+      if (evt.target.closest('button') === window.pin.advertOptions[i].element) {
         window.card.delete();
 
         var fragment = document.createDocumentFragment();
 
-        fragment.appendChild(window.card.create(window.elements.advertOptions[i], window.map.onAdvertButtonCloseClick));
-        window.elements.map.insertBefore(fragment, window.elements.mapContainer);
+        fragment.appendChild(window.card.create(window.pin.advertOptions[i], window.map.onAdvertButtonCloseClick));
+        map.insertBefore(fragment, mapContainer);
 
         document.addEventListener('keydown', window.map.onDocumentEscPress);
       }
@@ -105,15 +135,21 @@
     }
   };
 
-  var map = {
+  var fadeMap = function () {
+    map.classList.add('map--faded');
+  };
+
+  document.addEventListener('click', onPinClick);
+  mainPin.addEventListener('mousedown', onMainPinMousedown);
+
+  window.map = {
     onMainPinMousedown: onMainPinMousedown,
     onPinClick: onPinClick,
     onAdvertButtonCloseClick: onAdvertButtonCloseClick,
-    onDocumentEscPress: onDocumentEscPress
+    onDocumentEscPress: onDocumentEscPress,
+    fadeMap: fadeMap,
+    getAddressValue: getAddressValue,
+    enablesAddressInput: enablesAddressInput,
+    disablesAddressInput: disablesAddressInput
   };
-
-  window.map = map;
-
-  document.addEventListener('click', onPinClick);
-  window.elements.mainPin.addEventListener('mousedown', window.map.onMainPinMousedown);
 })();
