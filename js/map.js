@@ -316,18 +316,20 @@ var onMainPinMousedown = function (evt) {
   };
 
   var onMainPinMouseup = function () {
-    map.classList.remove('map--faded');
-    userForm.classList.remove('ad-form--disabled');
+    if (map.classList.contains('map--faded')) {
+      map.classList.remove('map--faded');
+      userForm.classList.remove('ad-form--disabled');
 
-    deleteEpandedAdvert();
-    enablesChildren(filterForm);
-    enablesChildren(userForm);
-    onTypeSelectChange();
-    onRoomsSelectChange();
+      deleteEpandedAdvert();
+      enablesChildren(filterForm);
+      enablesChildren(userForm);
+      onTypeSelectChange();
+      onRoomsSelectChange();
+
+      createsSimilarAdverts();
+    }
 
     addressInput.value = (parseInt(mainPin.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(mainPin.offsetTop, 10) + MAIN_PIN_HEIGHT);
-
-    createsSimilarAdverts();
 
     document.removeEventListener('mousemove', onMainPinMousemove);
     document.removeEventListener('mouseup', onMainPinMouseup);
