@@ -7,6 +7,8 @@
     map: document.querySelector('.map'),
     filterForm: document.querySelector('.map__filters'),
     userForm: document.querySelector('.ad-form'),
+    mapPins: document.querySelector('.map__pins'),
+    addressInput: document.querySelector('input[name="address"]'),
     get mapContainer() {
       return this.filterForm.parentElement;
     },
@@ -16,8 +18,6 @@
     get mapCard() {
       return this.template.content.querySelector('.map__card');
     },
-    mapPins: document.querySelector('.map__pins'),
-    addressInput: document.querySelector('input[name="address"]'),
     get titleInput() {
       return this.userForm.querySelector('input[name="title"]');
     },
