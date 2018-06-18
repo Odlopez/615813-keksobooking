@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var MAIN_PIN_COORDINATES = [570, 375];
   var TYPE_SELECT_PRICE = {
     flat: 1000,
     house: 5000,
@@ -156,8 +155,8 @@
     userForm.reset();
     filterForm.reset();
 
-    mainPin.style.top = MAIN_PIN_COORDINATES[1] + 'px';
-    mainPin.style.left = MAIN_PIN_COORDINATES[0] + 'px';
+    mainPin.style.top = window.constants.MAIN_PIN_COORDINATES[1] + 'px';
+    mainPin.style.left = window.constants.MAIN_PIN_COORDINATES[0] + 'px';
     window.map.getAddressValue(mainPin);
 
     capacitySelect.selectedIndex = 2;

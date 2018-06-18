@@ -31,8 +31,6 @@
   ];
   var ROOMS_QUANTYTI = [1, 5];
   var MAX_GUESTS_QUANTYTI = 100;
-  var LOCATION_X_COORDINATES = [0, 1200];
-  var LOCATION_Y_COORDINATES = [130, 630];
 
   /**
    * Генерирует объект данных для создания объявления
@@ -47,8 +45,8 @@
     author.avatar = AVATAR_LINKS[num];
 
     var location = {};
-    location.x = window.random.number(LOCATION_X_COORDINATES[1], LOCATION_X_COORDINATES[0]);
-    location.y = window.random.number(LOCATION_Y_COORDINATES[1], LOCATION_Y_COORDINATES[0]);
+    location.x = window.random.number(window.constants.LOCATION_X_COORDINATES[1], window.constants.LOCATION_X_COORDINATES[0]);
+    location.y = window.random.number(window.constants.LOCATION_Y_COORDINATES[1], window.constants.LOCATION_Y_COORDINATES[0]);
 
     var offer = {};
     offer.title = window.random.element(titles, true);

@@ -1,11 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
-  var LOCATION_X_COORDINATES = [0, 1200];
-  var LOCATION_Y_COORDINATES = [130, 630];
-  var MAIN_PIN_WIDTH = 64;
-  var MAIN_PIN_HEIGHT = 83;
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
   var addressInput = document.querySelector('input[name="address"]');
@@ -28,16 +23,16 @@
       mainPin.style.top = evtMove.clientY - shift.y + 'px';
       mainPin.style.left = evtMove.clientX - shift.x + 'px';
 
-      if ((evtMove.clientY - shift.y) < (LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT)) {
-        mainPin.style.top = LOCATION_Y_COORDINATES[0] - MAIN_PIN_HEIGHT + 'px';
-      } else if ((evtMove.clientY - shift.y) > (LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT)) {
-        mainPin.style.top = LOCATION_Y_COORDINATES[1] - MAIN_PIN_HEIGHT + 'px';
+      if ((evtMove.clientY - shift.y) < (window.constants.LOCATION_Y_COORDINATES[0] - window.constants.MAIN_PIN_HEIGHT)) {
+        mainPin.style.top = window.constants.LOCATION_Y_COORDINATES[0] - window.constants.MAIN_PIN_HEIGHT + 'px';
+      } else if ((evtMove.clientY - shift.y) > (window.constants.LOCATION_Y_COORDINATES[1] - window.constants.MAIN_PIN_HEIGHT)) {
+        mainPin.style.top = window.constants.LOCATION_Y_COORDINATES[1] - window.constants.MAIN_PIN_HEIGHT + 'px';
       }
 
-      if ((evtMove.clientX - shift.x) < (LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2)) {
-        mainPin.style.left = LOCATION_X_COORDINATES[0] - MAIN_PIN_WIDTH / 2 + 'px';
-      } else if ((evtMove.clientX - shift.x) > (LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2)) {
-        mainPin.style.left = LOCATION_X_COORDINATES[1] - MAIN_PIN_WIDTH / 2 + 'px';
+      if ((evtMove.clientX - shift.x) < (window.constants.LOCATION_X_COORDINATES[0] - window.constants.MAIN_PIN_WIDTH / 2)) {
+        mainPin.style.left = window.constants.LOCATION_X_COORDINATES[0] - window.constants.MAIN_PIN_WIDTH / 2 + 'px';
+      } else if ((evtMove.clientX - shift.x) > (window.constants.LOCATION_X_COORDINATES[1] - window.constants.MAIN_PIN_WIDTH / 2)) {
+        mainPin.style.left = window.constants.LOCATION_X_COORDINATES[1] - window.constants.MAIN_PIN_WIDTH / 2 + 'px';
       }
 
       getAddressValue(mainPin);
@@ -75,7 +70,7 @@
    * @param {Node} elem
    */
   var getAddressValue = function (elem) {
-    addressInput.value = (parseInt(elem.offsetLeft, 10) + MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(elem.offsetTop, 10) + MAIN_PIN_HEIGHT);
+    addressInput.value = (parseInt(elem.offsetLeft, 10) + window.constants.MAIN_PIN_WIDTH / 2) + ', ' + (parseInt(elem.offsetTop, 10) + window.constants.MAIN_PIN_HEIGHT);
   };
 
   /**
@@ -130,7 +125,7 @@
    * @param {Event} evt
    */
   var onDocumentEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
+    if (evt.keyCode === window.constants.ESC_KEYCODE) {
       window.card.delete();
     }
   };

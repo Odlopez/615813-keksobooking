@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
   var ADVERTS_QUANTYTI = 8;
   var advertOptions = [];
 
@@ -17,7 +15,7 @@
     var pin = mapPin.cloneNode(true);
     var pinImage = pin.children[0];
 
-    pin.style = 'left: ' + (adverts.location.x - PIN_WIDTH / 2) + 'px; top: ' + (adverts.location.y - PIN_HEIGHT) + 'px';
+    pin.style = 'left: ' + (adverts.location.x - window.constants.PIN_WIDTH / 2) + 'px; top: ' + (adverts.location.y - window.constants.PIN_HEIGHT) + 'px';
     pinImage.src = adverts.author.avatar;
     pinImage.alt = adverts.offer.title;
 
