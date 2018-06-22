@@ -81,6 +81,7 @@
    */
   var deleteEpandedAdvert = function () {
     var map = document.querySelector('.map');
+    var mapPins = map.querySelector('.map__pins');
     var expandedAdvert = map.querySelector('.map__card');
 
     if (expandedAdvert) {
@@ -93,6 +94,10 @@
         if (map.children[i] === expandedAdvert) {
           map.removeChild(map.children[i]);
         }
+      }
+
+      for (i = 0; i < mapPins.children.length; i++) {
+        mapPins.children[i].classList.remove('map__pin--active');
       }
     }
   };
