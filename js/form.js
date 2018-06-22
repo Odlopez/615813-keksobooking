@@ -270,7 +270,6 @@
   roomsSelect.addEventListener('change', onRoomsSelectChange);
   submit.addEventListener('click', onSubmitClick);
   resetButton.addEventListener('click', onResetButtonClick);
-
   titleInput.addEventListener('input', getMessageErrorInputTitle);
   priceInput.addEventListener('input', getMessageErrorInputPrice);
 })();
