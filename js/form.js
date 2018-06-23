@@ -76,21 +76,30 @@
   };
 
   /**
+   * Возвращает первую цифру статуса ответа сервера
+   * @param {Number} num
+   * @return {Number}
+   */
+  var shortensStatusNumber = function (num) {
+    return Math.round(num / 100);
+  };
+
+  /**
    * Коллбэк для ошибки при отправке формы пользователя
    * @param {any} statusError
    */
   var onError = function (statusError) {
     window.map.disablesAddressInput();
-    switch (Math.round(statusError / 100)) {
-      case (0):
-        window.popup.create('Произошла ошибка отправки данных');
+    switch (shortensStatusNumber(statusError)) {
+      case (window.constants.READY_STATE_UNSENT):
+        window.popup.createSystemMessage('Произошла ошибка отправки данных');
         break;
 
-      case (3):
-        window.popup.create('Сервер переехал на другой адресс');
+      case (shortensStatusNumber(window.constants.REDIRECT_STATUS)):
+        window.popup.createSystemMessage('Сервер переехал на другой адресс');
         break;
 
-      case (4):
+      case (shortensStatusNumber(window.constants.QUERY_ERROR_STATUS)):
         if (!titleInput.validity.valid) {
           getMessageErrorInputTitle();
         }
@@ -99,15 +108,15 @@
           getMessageErrorInputPrice();
         }
 
-        window.popup.create('Данные заполненые неверно');
+        window.popup.createSystemMessage('Данные заполненые неверно');
         break;
 
-      case (5):
-        window.popup.create('Произошла ошибка на сервере');
+      case (shortensStatusNumber(window.constants.SERVER_ERROR_STATUS)):
+        window.popup.createSystemMessage('Произошла ошибка на сервере');
         break;
 
       default:
-        window.popup.create('Ошибка: ' + statusError.name + ' ' + statusError.message);
+        window.popup.createSystemMessage('Ошибка: ' + statusError.name + ' ' + statusError.message);
     }
   };
 
@@ -147,6 +156,8 @@
       titleInput.setCustomValidity('');
       titleInput.style.boxShadow = 'none';
     }
+
+    window.popup.createInvalidMessage(titleInput, titleInput.validationMessage);
   };
 
   /**
@@ -165,6 +176,8 @@
       priceInput.setCustomValidity('');
       priceInput.style.boxShadow = 'none';
     }
+
+    window.popup.createInvalidMessage(priceInput, priceInput.validationMessage);
   };
 
   /**
@@ -174,7 +187,8 @@
     priceInput.min = TYPE_SELECT_PRICE[typeSelect.value];
     priceInput.value = TYPE_SELECT_PRICE[typeSelect.value];
     priceInput.placeholder = TYPE_SELECT_PRICE[typeSelect.value];
-    priceInput.style.boxShadow = 'none';
+
+    getMessageErrorInputPrice();
   };
 
   /**
@@ -272,4 +286,6 @@
   resetButton.addEventListener('click', onResetButtonClick);
   titleInput.addEventListener('input', getMessageErrorInputTitle);
   priceInput.addEventListener('input', getMessageErrorInputPrice);
+  titleInput.addEventListener('invalid', getMessageErrorInputTitle);
+  priceInput.addEventListener('invalid', getMessageErrorInputPrice);
 })();

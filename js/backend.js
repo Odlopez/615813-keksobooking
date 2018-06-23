@@ -14,7 +14,7 @@
       var target = evt.target;
 
       try {
-        if (target.status === 200) {
+        if (target.status === window.constants.SUCCESS_STATUS) {
           onLoad(target.response);
         } else {
           onError('Статус ответа: ' + target.status + ' ' + target.statusText);
@@ -47,7 +47,7 @@
     xhr.addEventListener('load', function (evt) {
       var target = evt.target;
       try {
-        if (target.status === 200) {
+        if (target.status === window.constants.SUCCESS_STATUS) {
           onLoad();
         } else {
           onError(evt.target.status);

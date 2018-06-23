@@ -11,7 +11,6 @@
     var error = document.createElement('div');
     var popupVisibilityTime = 7000;
 
-
     /**
      * Удаляет попап
      */
@@ -51,8 +50,8 @@
       }
     };
 
-    popup.style = 'position: fixed; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 10; top: 0; left: 0';
-    error.style = 'position: absolute; width: 50%; padding: 20px; top: 50%; left: 50%; color: rgb(255, 255, 255); font-size: 50px; font-weight: 700; text-align: center; transform: translate(-50%, -50%)';
+    popup.style = window.constants.SYSTEM_MESSAGE_DATAS.POPUP_STYLE;
+    error.style = window.constants.SYSTEM_MESSAGE_DATAS.ERROR_STYLE;
     error.textContent = message;
 
     popup.appendChild(error);
@@ -69,7 +68,44 @@
     document.addEventListener('click', onDocumentClick);
   };
 
+  var createInvalidMessage = function (element, text) {
+    var message = document.createElement('span');
+
+    /**
+     * Удаляет сообщение об ошибке
+     */
+    var removeInvalidMessage = function () {
+      var oldInvalidMessage = element.parentElement.querySelector('.' + window.constants.INVALID_MESSAGE_DATAS.CLASS_NAME);
+
+      if (oldInvalidMessage) {
+        element.parentElement.removeChild(oldInvalidMessage);
+      }
+    };
+
+    /**
+     * Создает функцию для обработчика события клика по документку (закрытие сообщения об ошике)
+     */
+    var onMessageClick = function () {
+      removeInvalidMessage();
+
+      message.removeEventListener('click', onMessageClick);
+    };
+
+    removeInvalidMessage();
+
+    message.className = window.constants.INVALID_MESSAGE_DATAS.CLASS_NAME;
+    message.style = window.constants.INVALID_MESSAGE_DATAS.STYLE;
+
+    if (text) {
+      message.textContent = text;
+      element.insertAdjacentElement('beforebegin', message);
+    }
+
+    message.addEventListener('click', onMessageClick);
+  };
+
   window.popup = {
-    create: createSystemMessage
+    createSystemMessage: createSystemMessage,
+    createInvalidMessage: createInvalidMessage
   };
 })();

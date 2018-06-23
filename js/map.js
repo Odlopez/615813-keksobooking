@@ -18,7 +18,7 @@
    * @param {String} message
    */
   var onLoadDataError = function (message) {
-    window.popup.create(message, true);
+    window.popup.createSystemMessage(message, true);
   };
 
   /**
