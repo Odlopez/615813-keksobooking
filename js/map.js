@@ -90,20 +90,6 @@
   };
 
   /**
-   * Удаляет атрибут disabled у поля "Адрес" формы создания объявления
-   */
-  var enablesAddressInput = function () {
-    addressInput.disabled = false;
-  };
-
-  /**
-   * Вставляет атрибут disabled у поля "Адрес" формы создания объявления
-   */
-  var disablesAddressInput = function () {
-    addressInput.disabled = true;
-  };
-
-  /**
    * Обрабочтик события клика по метке случайного объявления на карте
    * @param {Event} evt
    */
@@ -161,13 +147,9 @@
   mainPin.addEventListener('mousedown', onMainPinMousedown);
 
   window.map = {
-    onMainPinMousedown: onMainPinMousedown,
-    onPinClick: onPinClick,
     onAdvertButtonCloseClick: onAdvertButtonCloseClick,
     onDocumentEscPress: onDocumentEscPress,
     fadeMap: fadeMap,
     getAddressValue: getAddressValue,
-    enablesAddressInput: enablesAddressInput,
-    disablesAddressInput: disablesAddressInput
   };
 })();

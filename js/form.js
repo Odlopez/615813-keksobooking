@@ -18,6 +18,7 @@
   var resetButton = userForm.querySelector('.ad-form__reset');
   var timeInSelect = userForm.querySelector('select[name="timein"]');
   var timeOutSelect = userForm.querySelector('select[name="timeout"]');
+  var addressInput = document.querySelector('input[name="address"]');
   var mainPin = document.querySelector('.map__pin--main');
   var success = document.querySelector('.success');
   var popupVisibilityTime = 4000;
@@ -37,11 +38,25 @@
   };
 
   /**
+   * Удаляет атрибут disabled у поля "Адрес" формы создания объявления
+   */
+  var enablesAddressInput = function () {
+    addressInput.disabled = false;
+  };
+
+  /**
+   * Вставляет атрибут disabled у поля "Адрес" формы создания объявления
+   */
+  var disablesAddressInput = function () {
+    addressInput.disabled = true;
+  };
+
+  /**
    * Коллбэк для успешно отправленной формы
    */
   var onLoadForm = function () {
     resetForms();
-    window.map.disablesAddressInput();
+    disablesAddressInput();
 
     success.classList.remove('hidden');
 
@@ -89,7 +104,8 @@
    * @param {any} statusError
    */
   var onError = function (statusError) {
-    window.map.disablesAddressInput();
+    disablesAddressInput();
+
     switch (shortensStatusNumber(statusError)) {
       case (window.constants.READY_STATE_UNSENT):
         window.popup.createSystemMessage('Произошла ошибка отправки данных');
@@ -234,7 +250,7 @@
 
     var form = evt.target.form;
 
-    window.map.enablesAddressInput();
+    enablesAddressInput();
     window.backend.upload(new FormData(form), onLoadForm, onError);
   };
 
@@ -263,7 +279,7 @@
 
     window.map.fadeMap();
     userForm.classList.add('ad-form--disabled');
-    window.form.disables(userForm);
+    disablesChildren(userForm);
   };
 
   disablesChildren(filterForm);
