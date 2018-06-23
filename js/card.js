@@ -102,10 +102,8 @@
     }
   };
 
-  var card = {
+  window.card = {
     create: createExpandedAdvert,
     delete: deleteEpandedAdvert
   };
-
-  window.card = card;
 })();

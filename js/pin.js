@@ -53,10 +53,8 @@
     mapPins.appendChild(fragment);
   };
 
-  var pin = {
+  window.pin = {
     create: createsSimilarAdverts,
     advertOptions: advertOptions
   };
-
-  window.pin = pin;
 })();

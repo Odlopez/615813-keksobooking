@@ -266,15 +266,6 @@
     window.form.disables(userForm);
   };
 
-  var form = {
-    enables: enablesChildren,
-    disables: disablesChildren,
-    onTypeSelectChange: onTypeSelectChange,
-    onRoomsSelectChange: onRoomsSelectChange
-  };
-
-  window.form = form;
-
   disablesChildren(filterForm);
   disablesChildren(userForm);
 
@@ -288,4 +279,11 @@
   priceInput.addEventListener('input', getMessageErrorInputPrice);
   titleInput.addEventListener('invalid', getMessageErrorInputTitle);
   priceInput.addEventListener('invalid', getMessageErrorInputPrice);
+
+  window.form = {
+    enables: enablesChildren,
+    disables: disablesChildren,
+    onTypeSelectChange: onTypeSelectChange,
+    onRoomsSelectChange: onRoomsSelectChange
+  };
 })();
