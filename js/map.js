@@ -6,6 +6,22 @@
   var addressInput = document.querySelector('input[name="address"]');
 
   /**
+   * Вызывает функцию создания похожих объявлений
+   * @param {Array} data
+   */
+  var createPins = function (data) {
+    window.pin.create(data);
+  };
+
+  /**
+   * Выводит в консоль сообщение об ошибке
+   * @param {String} message
+   */
+  var onLoadDataError = function (message) {
+    window.popup.createSystemMessage(message, true);
+  };
+
+  /**
    * Создает функцию для обработчика события перетягивания главной метки
    * @param {Event} evt
    */
@@ -52,7 +68,7 @@
         window.form.onTypeSelectChange();
         window.form.onRoomsSelectChange();
 
-        window.pin.create();
+        window.backend.load(createPins, onLoadDataError);
       }
 
       getAddressValue(mainPin);
@@ -74,20 +90,6 @@
   };
 
   /**
-   * Удаляет атрибут disabled у поля "Адрес" формы создания объявления
-   */
-  var enablesAddressInput = function () {
-    addressInput.disabled = false;
-  };
-
-  /**
-   * Вставляет атрибут disabled у поля "Адрес" формы создания объявления
-   */
-  var disablesAddressInput = function () {
-    addressInput.disabled = true;
-  };
-
-  /**
    * Обрабочтик события клика по метке случайного объявления на карте
    * @param {Event} evt
    */
@@ -96,11 +98,14 @@
       return;
     }
 
+    var elem = evt.target.closest('button');
+
     var mapContainer = document.querySelector('.map__filters-container');
 
     for (var i = 0; i < window.pin.advertOptions.length; i++) {
+      window.pin.advertOptions[i].element.classList.remove('map__pin--active');
 
-      if (evt.target.closest('button') === window.pin.advertOptions[i].element) {
+      if (elem === window.pin.advertOptions[i].element) {
         window.card.delete();
 
         var fragment = document.createDocumentFragment();
@@ -110,6 +115,10 @@
 
         document.addEventListener('keydown', window.map.onDocumentEscPress);
       }
+    }
+
+    if (!elem.classList.contains('map__pin--main')) {
+      elem.classList.add('map__pin--active');
     }
   };
 
@@ -138,13 +147,9 @@
   mainPin.addEventListener('mousedown', onMainPinMousedown);
 
   window.map = {
-    onMainPinMousedown: onMainPinMousedown,
-    onPinClick: onPinClick,
     onAdvertButtonCloseClick: onAdvertButtonCloseClick,
     onDocumentEscPress: onDocumentEscPress,
     fadeMap: fadeMap,
     getAddressValue: getAddressValue,
-    enablesAddressInput: enablesAddressInput,
-    disablesAddressInput: disablesAddressInput
   };
 })();

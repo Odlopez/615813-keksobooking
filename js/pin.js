@@ -24,14 +24,15 @@
 
   /**
    * Создает заданное количество меток на карте. Связывает созданный DOM-элемент метки с JS-массивом, описывающим данные текущего объявления
+   * @param {Array} data
    */
-  var createsSimilarAdverts = function () {
+  var createsSimilarAdverts = function (data) {
     advertOptions.length = 0;
 
     var mapPins = document.querySelector('.map__pins');
 
     for (var i = 0; i < ADVERTS_QUANTYTI; i++) {
-      advertOptions.push(window.data.getAdvert(i));
+      advertOptions.push(data[i]);
     }
 
     var fragment = document.createDocumentFragment();
@@ -52,10 +53,8 @@
     mapPins.appendChild(fragment);
   };
 
-  var pin = {
+  window.pin = {
     create: createsSimilarAdverts,
     advertOptions: advertOptions
   };
-
-  window.pin = pin;
 })();

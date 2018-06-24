@@ -18,6 +18,123 @@
   var resetButton = userForm.querySelector('.ad-form__reset');
   var timeInSelect = userForm.querySelector('select[name="timein"]');
   var timeOutSelect = userForm.querySelector('select[name="timeout"]');
+  var addressInput = document.querySelector('input[name="address"]');
+  var mainPin = document.querySelector('.map__pin--main');
+  var success = document.querySelector('.success');
+  var popupVisibilityTime = 4000;
+
+  /**
+   * Сбрасывает формы до первоначального состояния
+   */
+  var resetForms = function () {
+    userForm.reset();
+    filterForm.reset();
+
+    window.map.getAddressValue(mainPin);
+
+    capacitySelect.selectedIndex = 2;
+
+    window.card.delete();
+  };
+
+  /**
+   * Удаляет атрибут disabled у поля "Адрес" формы создания объявления
+   */
+  var enablesAddressInput = function () {
+    addressInput.disabled = false;
+  };
+
+  /**
+   * Вставляет атрибут disabled у поля "Адрес" формы создания объявления
+   */
+  var disablesAddressInput = function () {
+    addressInput.disabled = true;
+  };
+
+  /**
+   * Коллбэк для успешно отправленной формы
+   */
+  var onLoadForm = function () {
+    resetForms();
+    disablesAddressInput();
+
+    success.classList.remove('hidden');
+
+    setTimeout(function () {
+      if (!success.classList.contains('hidden')) {
+        onDocumentClick();
+      }
+    }, popupVisibilityTime);
+
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keydown', onDocumentKeydown);
+  };
+
+  /**
+   * Создает функцию для обработчика события клика по документку (закрытие сообщения об успешной отправке)
+   */
+  var onDocumentClick = function () {
+    success.classList.add('hidden');
+
+    document.removeEventListener('click', onDocumentClick);
+    document.removeEventListener('keydown', onDocumentKeydown);
+  };
+
+  /**
+   * Создает функцию для обработчика события нажатия ESC при открытом сообщении об успешной отправке (закрывает его)
+   * @param {Event} evt
+   */
+  var onDocumentKeydown = function (evt) {
+    if (evt.keyCode === window.constants.ESC_KEYCODE) {
+      onDocumentClick();
+    }
+  };
+
+  /**
+   * Возвращает первую цифру статуса ответа сервера
+   * @param {Number} num
+   * @return {Number}
+   */
+  var shortensStatusNumber = function (num) {
+    return Math.round(num / 100);
+  };
+
+  /**
+   * Коллбэк для ошибки при отправке формы пользователя
+   * @param {any} statusError
+   */
+  var onError = function (statusError) {
+    disablesAddressInput();
+
+    switch (shortensStatusNumber(statusError)) {
+      case (window.constants.READY_STATE_UNSENT):
+        window.popup.createSystemMessage('Произошла ошибка отправки данных');
+        break;
+
+      case (shortensStatusNumber(window.constants.REDIRECT_STATUS)):
+        window.popup.createSystemMessage('Сервер переехал на другой адресс');
+        break;
+
+      case (shortensStatusNumber(window.constants.QUERY_ERROR_STATUS)):
+        if (!titleInput.validity.valid) {
+          getMessageErrorInputTitle();
+        }
+
+        if (!priceInput.validity.valid) {
+          getMessageErrorInputPrice();
+        }
+
+        window.popup.createSystemMessage('Данные заполненые неверно');
+        break;
+
+      case (shortensStatusNumber(window.constants.SERVER_ERROR_STATUS)):
+        window.popup.createSystemMessage('Произошла ошибка на сервере');
+        break;
+
+      default:
+        window.popup.createSystemMessage('Ошибка: ' + statusError.name + ' ' + statusError.message);
+    }
+  };
 
   /**
    * Присваивает всем дочерним элементам заданного элемента артибут disabled
@@ -41,56 +158,42 @@
 
   /**
    * Создает сообщение об ошибке, при некорректном заполнении поля с заголовком объявления
-   * @param {Node} input
    */
-  var getMessageErrorInputTitle = function (input) {
-    input.style.boxShadow = '0 0 0 5px red';
+  var getMessageErrorInputTitle = function () {
+    titleInput.style.boxShadow = '0 0 0 5px red';
 
-    if (input.validity.tooShort) {
-      input.setCustomValidity('Сообщение должно быть не менее 30 символов');
-    } else if (input.validity.tooLong) {
-      input.setCustomValidity('Сообщение должно быть не более 100 символов');
-    } else if (input.validity.valueMissing) {
-      input.setCustomValidity('Сообщение не должно быть пустым');
+    if (titleInput.validity.tooShort) {
+      titleInput.setCustomValidity('Сообщение должно быть не менее 30 символов');
+    } else if (titleInput.validity.tooLong) {
+      titleInput.setCustomValidity('Сообщение должно быть не более 100 символов');
+    } else if (titleInput.validity.valueMissing) {
+      titleInput.setCustomValidity('Сообщение не должно быть пустым');
     } else {
-      input.setCustomValidity('');
-      input.style.boxShadow = 'none';
+      titleInput.setCustomValidity('');
+      titleInput.style.boxShadow = 'none';
     }
+
+    window.popup.createInvalidMessage(titleInput, titleInput.validationMessage);
   };
 
   /**
    * Создает сообщение об ошибке, при некорректном заполнении поля со стоимостью жилья
-   * @param {Node} input
    */
-  var getMessageErrorInputPrice = function (input) {
-    input.style.boxShadow = '0 0 0 5px red';
+  var getMessageErrorInputPrice = function () {
+    priceInput.style.boxShadow = '0 0 0 5px red';
 
-    if (input.validity.rangeUnderflow) {
-      input.setCustomValidity('Стоимость должна быть не ниже ' + input.min);
-    } else if (input.validity.rangeOverflow) {
-      input.setCustomValidity('Стоимость должна быть не выше 1000000');
-    } else if (input.validity.valueMissing) {
-      input.setCustomValidity('Введите цену');
+    if (priceInput.validity.rangeUnderflow) {
+      priceInput.setCustomValidity('Стоимость должна быть не ниже ' + priceInput.min);
+    } else if (priceInput.validity.rangeOverflow) {
+      priceInput.setCustomValidity('Стоимость должна быть не выше 1000000');
+    } else if (priceInput.validity.valueMissing) {
+      priceInput.setCustomValidity('Введите цену');
     } else {
-      input.setCustomValidity('');
-      input.style.boxShadow = 'none';
+      priceInput.setCustomValidity('');
+      priceInput.style.boxShadow = 'none';
     }
-  };
 
-  /**
-   * Создает функцию для обработчика события попытки отправить невалидную форму
-   * @param {Event} evt
-   */
-  var onFormInvalid = function (evt) {
-    window.map.disablesAddressInput();
-
-    switch (evt.target) {
-      case (titleInput):
-        getMessageErrorInputTitle(evt.target);
-        break;
-      case (priceInput):
-        getMessageErrorInputPrice(evt.target);
-    }
+    window.popup.createInvalidMessage(priceInput, priceInput.validationMessage);
   };
 
   /**
@@ -100,7 +203,8 @@
     priceInput.min = TYPE_SELECT_PRICE[typeSelect.value];
     priceInput.value = TYPE_SELECT_PRICE[typeSelect.value];
     priceInput.placeholder = TYPE_SELECT_PRICE[typeSelect.value];
-    priceInput.style.boxShadow = 'none';
+
+    getMessageErrorInputPrice();
   };
 
   /**
@@ -122,6 +226,7 @@
    */
   var onRoomsSelectChange = function () {
     var value = (roomsSelect.value === '100') ? '0' : roomsSelect.value;
+
     for (var i = 0; i < capacitySelect.children.length; i++) {
       if (capacitySelect.children[i].value > value) {
         capacitySelect.children[i].style.display = 'none';
@@ -138,9 +243,15 @@
 
   /**
    * Создает функцию обработчика событий, при отправлении формы
+   * @param {Event} evt
    */
-  var onSubmitClick = function () {
-    window.map.enablesAddressInput();
+  var onSubmitClick = function (evt) {
+    evt.preventDefault();
+
+    var form = evt.target.form;
+
+    enablesAddressInput();
+    window.backend.upload(new FormData(form), onLoadForm, onError);
   };
 
   /**
@@ -150,21 +261,15 @@
   var onResetButtonClick = function (evt) {
     evt.preventDefault();
 
-    var mainPin = document.querySelector('.map__pin--main');
-
-    userForm.reset();
-    filterForm.reset();
+    var mapPins = document.querySelector('.map__pins');
+    var pins = mapPins.querySelectorAll('.map__pin');
 
     mainPin.style.top = window.constants.MAIN_PIN_COORDINATES[1] + 'px';
     mainPin.style.left = window.constants.MAIN_PIN_COORDINATES[0] + 'px';
-    window.map.getAddressValue(mainPin);
+    priceInput.style.boxShadow = 'none';
+    titleInput.style.boxShadow = 'none';
 
-    capacitySelect.selectedIndex = 2;
-
-    window.card.delete();
-
-    var mapPins = document.querySelector('.map__pins');
-    var pins = mapPins.querySelectorAll('.map__pin');
+    resetForms();
 
     for (var i = pins.length - 1; i > 0; i--) {
       if (pins[i] !== mainPin) {
@@ -174,27 +279,27 @@
 
     window.map.fadeMap();
     userForm.classList.add('ad-form--disabled');
-    window.form.disables(userForm);
+    disablesChildren(userForm);
   };
-
-  var form = {
-    enables: enablesChildren,
-    disables: disablesChildren,
-    onTypeSelectChange: onTypeSelectChange,
-    onRoomsSelectChange: onRoomsSelectChange
-  };
-
-  window.form = form;
 
   disablesChildren(filterForm);
   disablesChildren(userForm);
 
-  userForm.addEventListener('invalid', onFormInvalid, true);
   typeSelect.addEventListener('change', onTypeSelectChange);
-  userForm.addEventListener('input', onFormInvalid, true);
   timeInSelect.addEventListener('change', onTimeSelectChange);
   timeOutSelect.addEventListener('change', onTimeSelectChange);
   roomsSelect.addEventListener('change', onRoomsSelectChange);
   submit.addEventListener('click', onSubmitClick);
   resetButton.addEventListener('click', onResetButtonClick);
+  titleInput.addEventListener('input', getMessageErrorInputTitle);
+  priceInput.addEventListener('input', getMessageErrorInputPrice);
+  titleInput.addEventListener('invalid', getMessageErrorInputTitle);
+  priceInput.addEventListener('invalid', getMessageErrorInputPrice);
+
+  window.form = {
+    enables: enablesChildren,
+    disables: disablesChildren,
+    onTypeSelectChange: onTypeSelectChange,
+    onRoomsSelectChange: onRoomsSelectChange
+  };
 })();

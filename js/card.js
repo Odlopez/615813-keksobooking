@@ -81,6 +81,7 @@
    */
   var deleteEpandedAdvert = function () {
     var map = document.querySelector('.map');
+    var mapPins = map.querySelector('.map__pins');
     var expandedAdvert = map.querySelector('.map__card');
 
     if (expandedAdvert) {
@@ -94,13 +95,15 @@
           map.removeChild(map.children[i]);
         }
       }
+
+      for (i = 0; i < mapPins.children.length; i++) {
+        mapPins.children[i].classList.remove('map__pin--active');
+      }
     }
   };
 
-  var card = {
+  window.card = {
     create: createExpandedAdvert,
     delete: deleteEpandedAdvert
   };
-
-  window.card = card;
 })();
