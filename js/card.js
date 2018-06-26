@@ -45,7 +45,7 @@
         advertType = 'Дворец';
     }
 
-    advertCapacity.textContent = advertOption.offer.rooms + ' комнаты для ' + advertOption.offer.guests + ' гостей';
+    advertCapacity.textContent = returnRoomReport(advertOption.offer.rooms, advertOption.offer.guests);
     advertTime.textContent = 'Заезд после ' + advertOption.offer.checkin + ', выезд до ' + advertOption.offer.checkout;
 
     for (var i = 0; i < advertOption.offer.features.length; i++) {
@@ -74,6 +74,33 @@
     advertButtonClose.addEventListener('click', funcClick);
 
     return expandedAdvert;
+  };
+
+  /**
+   * Возвращает строку с информацией о комнатах и гостях с учетом правил русского языка.
+   * @param {Number} rooms
+   * @param {Number} guests
+   * @return {String}
+   */
+  var returnRoomReport = function (rooms, guests) {
+    var roomsEnding = '';
+    var guestsEnding = 'ей';
+
+    if (rooms > 4 && rooms < 21) {
+      roomsEnding = '';
+    } else if (rooms % 10 === 1) {
+      roomsEnding = 'а';
+    } else if (rooms % 10 < 5 && rooms % 10 > 1) {
+      roomsEnding = 'ы';
+    }
+
+    if (guests > 2 && guests < 21) {
+      guestsEnding = 'ей';
+    } else if (guests % 10 === 1) {
+      guestsEnding = 'я';
+    }
+
+    return rooms + ' комнат' + roomsEnding + ' для ' + guests + ' гост' + guestsEnding;
   };
 
   /**
