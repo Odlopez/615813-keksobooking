@@ -107,15 +107,15 @@
     disablesAddressInput();
 
     switch (shortensStatusNumber(statusError)) {
-      case (window.constants.READY_STATE_UNSENT):
+      case (window.constants.Status.READY_STATE_UNSENT):
         window.popup.createSystemMessage('Произошла ошибка отправки данных');
         break;
 
-      case (shortensStatusNumber(window.constants.REDIRECT_STATUS)):
+      case (shortensStatusNumber(window.constants.Status.REDIRECT)):
         window.popup.createSystemMessage('Сервер переехал на другой адресс');
         break;
 
-      case (shortensStatusNumber(window.constants.QUERY_ERROR_STATUS)):
+      case (shortensStatusNumber(window.constants.Status.QUERY_ERROR)):
         if (!titleInput.validity.valid) {
           getMessageErrorInputTitle();
         }
@@ -127,7 +127,7 @@
         window.popup.createSystemMessage('Данные заполненые неверно');
         break;
 
-      case (shortensStatusNumber(window.constants.SERVER_ERROR_STATUS)):
+      case (shortensStatusNumber(window.constants.Status.SERVER_ERROR)):
         window.popup.createSystemMessage('Произошла ошибка на сервере');
         break;
 
