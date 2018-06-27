@@ -5,27 +5,30 @@
    * Сравнивает параметры введенные в форму-фильтр  и переданные в похожие объявления с сервера
    * @param {any} key
    * @param {any} advert
-   * @param {Object} FilterFormContent
+   * @param {Object} filterFormContent
    * @return {Boolean}
    */
-  var comparesAdvertsForm = function (key, advert, FilterFormContent) {
+  var comparesAdvertsForm = function (key, advert, filterFormContent) {
     var result;
 
     switch (key) {
       case ('type'):
-        result = (advert.offer[key] === FilterFormContent[key]) || false;
+        result = (advert.offer[key] === filterFormContent[key]) || false;
         break;
       case ('rooms'):
-        result = (advert.offer[key] === +FilterFormContent[key]) || false;
+        result = (advert.offer[key] === +filterFormContent[key]) || false;
         break;
       case ('guests'):
-        result = (advert.offer[key] === +FilterFormContent[key]) || false;
+        result = (advert.offer[key] === +filterFormContent[key]) || false;
         break;
       case ('price'):
-        result = comparesPrices(advert.offer[key], FilterFormContent[key]);
+        result = comparesPrices(advert.offer[key], filterFormContent[key]);
         break;
       case ('features'):
-        result = comparesFeatures(advert.offer[key], FilterFormContent[key]);
+        result = comparesFeatures(advert.offer[key], filterFormContent[key]);
+        break;
+      default:
+        result = false;
     }
 
     return result;
@@ -71,16 +74,16 @@
 
   /**
    * Функция фильтрует данные, которые пришли с сервера каждый раз, когда происходят изменения в форме.
-   * @param {Object} FilterFormContent
+   * @param {Object} filterFormContent
    * @return {Array}
    */
-  var filterAdverts = function (FilterFormContent) {
+  var filterAdverts = function (filterFormContent) {
     var adverts = window.map.adverts;
 
-    for (var key in FilterFormContent) {
-      if (FilterFormContent[key]) {
+    for (var key in filterFormContent) {
+      if (filterFormContent[key]) {
         adverts = adverts.filter(function (advert) {
-          return comparesAdvertsForm(key, advert, FilterFormContent);
+          return comparesAdvertsForm(key, advert, filterFormContent);
         });
       }
     }

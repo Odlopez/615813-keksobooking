@@ -2,7 +2,6 @@
 (function () {
   var lastTimeout;
 
-
   window.debounce = function (fun) {
     if (lastTimeout) {
       clearTimeout(lastTimeout);
