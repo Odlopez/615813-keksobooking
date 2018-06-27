@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   /**
    * Генерирует развернутое объявление
    * @param {Array.<advert>} advertOption
@@ -52,7 +51,7 @@
       advertFeatures.querySelector('.popup__feature--' + advertOption.offer.features[i]).textContent = advertOption.offer.features[i];
     }
 
-    for (i = 0; i < advertFeatures.children.length; i++) {
+    for (i = advertFeatures.children.length - 1; i >= 0; i--) {
       if (advertFeatures.children[i].textContent === '') {
         advertFeatures.removeChild(advertFeatures.children[i]);
       }
