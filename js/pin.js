@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var ADVERTS_QUANTYTI = 8;
+  var ADVERTS_QUANTYTI = 5;
   var advertOptions = [];
 
   /**
@@ -31,13 +31,17 @@
 
     var mapPins = document.querySelector('.map__pins');
 
-    for (var i = 0; i < ADVERTS_QUANTYTI; i++) {
+    for (var i = 0; i < data.length; i++) {
+      if (i > ADVERTS_QUANTYTI - 1) {
+        break;
+      }
+
       advertOptions.push(data[i]);
     }
 
     var fragment = document.createDocumentFragment();
 
-    for (i = 0; i < ADVERTS_QUANTYTI; i++) {
+    for (i = 0; i < advertOptions.length; i++) {
       var pinItem = createPin(advertOptions[i]);
 
       fragment.appendChild(pinItem);

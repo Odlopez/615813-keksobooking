@@ -38,11 +38,11 @@
         break;
 
       case ('house'):
-        advertType = 'Дом';
+        advertType.textContent = 'Дом';
         break;
 
       default:
-        advertType = 'Дворец';
+        advertType.textContent = 'Дворец';
     }
 
     advertCapacity.textContent = returnRoomReport(advertOption.offer.rooms, advertOption.offer.guests);
