@@ -86,17 +86,17 @@
     var roomsEnding = '';
     var guestsEnding = 'ей';
 
-    if (rooms >= window.constants.DEBOUNCE_INTERVAL.FIRST[0] && rooms <= window.constants.DEBOUNCE_INTERVAL.FIRST[1]) {
+    if (rooms >= window.constants.BordersForm.FIRST[0] && rooms <= window.constants.BordersForm.FIRST[1]) {
       roomsEnding = '';
-    } else if (rooms % 10 === window.constants.DEBOUNCE_INTERVAL.SECOND) {
+    } else if (rooms % 10 === window.constants.BordersForm.SECOND) {
       roomsEnding = 'а';
-    } else if (rooms % 10 >= window.constants.DEBOUNCE_INTERVAL.THIRD[0] && rooms % 10 <= window.constants.DEBOUNCE_INTERVAL.THIRD[1]) {
+    } else if (rooms % 10 >= window.constants.BordersForm.THIRD[0] && rooms % 10 <= window.constants.BordersForm.THIRD[1]) {
       roomsEnding = 'ы';
     }
 
-    if (guests >= window.constants.DEBOUNCE_INTERVAL.THIRD[0] && guests <= window.constants.DEBOUNCE_INTERVAL.FIRST[1]) {
+    if (guests >= window.constants.BordersForm.THIRD[0] && guests <= window.constants.BordersForm.FIRST[1]) {
       guestsEnding = 'ей';
-    } else if (guests % 10 === window.constants.DEBOUNCE_INTERVAL.SECOND) {
+    } else if (guests % 10 === window.constants.BordersForm.SECOND) {
       guestsEnding = 'я';
     }
 
