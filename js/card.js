@@ -104,7 +104,7 @@
   };
 
   /**
-   * Удаляет из DOM-дерева развенутое объявление
+   * Удаляет из DOM-дерева развенутое объявление.
    */
   var deleteEpandedAdvert = function () {
     var map = document.querySelector('.map');
