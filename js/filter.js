@@ -13,13 +13,13 @@
 
     switch (key) {
       case ('type'):
-        result = (advert.offer[key] === filterFormContent[key]) || false;
+        result = (advert.offer[key] === filterFormContent[key]);
         break;
       case ('rooms'):
-        result = (advert.offer[key] === +filterFormContent[key]) || false;
+        result = (advert.offer[key] === +filterFormContent[key]);
         break;
       case ('guests'):
-        result = (advert.offer[key] === +filterFormContent[key]) || false;
+        result = (advert.offer[key] === +filterFormContent[key]);
         break;
       case ('price'):
         result = comparesPrices(advert.offer[key], filterFormContent[key]);
@@ -45,13 +45,13 @@
 
     switch (formValue) {
       case ('low'):
-        result = advertValue < 10000;
+        result = advertValue < window.constants.PriceInterval.MIDDLE;
         break;
       case ('middle'):
-        result = (advertValue >= 10000) && (advertValue < 50000);
+        result = (advertValue >= window.constants.PriceInterval.MIDDLE) && (advertValue < window.constants.PriceInterval.HIGH);
         break;
       case ('high'):
-        result = advertValue >= 50000;
+        result = advertValue >= advertValue < window.constants.PriceInterval.HIGH;
         break;
     }
 

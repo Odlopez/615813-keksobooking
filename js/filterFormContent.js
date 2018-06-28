@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var FilterFormContent = function () {
+  window.FilterFormContent = function () {
     var form = document.querySelector('.map__filters');
     var Input = {
       type: document.querySelector('[name="housing-type"]'),
@@ -13,7 +13,7 @@
     var features = [];
 
     for (var i = 0; i < featuresFieldset.children.length; i++) {
-      if (featuresFieldset.children[i].checked === true) {
+      if (featuresFieldset.children[i].checked) {
         features.push(featuresFieldset.children[i].value);
       }
     }
@@ -23,9 +23,5 @@
     this.rooms = (Input.rooms.value === 'any') ? null : Input.rooms.value;
     this.guests = (Input.guests.value === 'any') ? null : Input.guests.value;
     this.features = features;
-  };
-
-  window.constructor = {
-    Form: FilterFormContent
   };
 })();

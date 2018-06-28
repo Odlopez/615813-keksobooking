@@ -145,7 +145,7 @@
    */
   var onFilterFormInput = function () {
     window.debounce(function () {
-      var filterFormContent = new window.constructor.Form();
+      var filterFormContent = new window.FilterFormContent();
       window.card.delete();
       window.pin.create(window.filter(filterFormContent));
     });

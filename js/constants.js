@@ -27,6 +27,10 @@
       FIRST: [5, 20],
       SECOND: 1,
       THIRD: [2, 4]
+    },
+    PriceInterval: {
+      MIDDLE: 10000,
+      HIGH: 50000
     }
   };
 })();
