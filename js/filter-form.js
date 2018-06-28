@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.FilterFormContent = function () {
+  window.FilterForm = function () {
     var form = document.querySelector('.map__filters');
     var Input = {
       type: document.querySelector('[name="housing-type"]'),
