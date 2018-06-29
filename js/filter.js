@@ -45,13 +45,13 @@
 
     switch (formValue) {
       case ('low'):
-        result = advertValue < window.constants.PriceInterval.MIDDLE;
+        result = (advertValue < window.constants.priceInterval.MIDDLE);
         break;
       case ('middle'):
-        result = (advertValue >= window.constants.PriceInterval.MIDDLE) && (advertValue < window.constants.PriceInterval.HIGH);
+        result = (advertValue >= window.constants.priceInterval.MIDDLE) && (advertValue < window.constants.priceInterval.HIGH);
         break;
       case ('high'):
-        result = advertValue >= advertValue < window.constants.PriceInterval.HIGH;
+        result = (advertValue >= window.constants.priceInterval.HIGH);
         break;
     }
 

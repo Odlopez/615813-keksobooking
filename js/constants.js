@@ -18,17 +18,17 @@
       QUERY_ERROR: 400,
       SERVER_ERROR: 500
     },
-    MESSAGE_CLASS_NAMES: {
+    messageClassNames: {
       INVALID: 'js-invalid-message',
       ERROR: 'js-error-message',
     },
     DEBOUNCE_INTERVAL: 500,
-    BordersForm: {
+    bordersForm: {
       FIRST: [5, 20],
       SECOND: 1,
       THIRD: [2, 4]
     },
-    PriceInterval: {
+    priceInterval: {
       MIDDLE: 10000,
       HIGH: 50000
     }

@@ -50,7 +50,7 @@
       }
     };
 
-    popup.className = window.constants.MESSAGE_CLASS_NAMES.ERROR;
+    popup.className = window.constants.messageClassNames.ERROR;
     error.textContent = message;
 
     popup.appendChild(error);
@@ -74,7 +74,7 @@
      * Удаляет сообщение об ошибке
      */
     var removeInvalidMessage = function () {
-      var oldInvalidMessage = element.parentElement.querySelector('.' + window.constants.MESSAGE_CLASS_NAMES.INVALID);
+      var oldInvalidMessage = element.parentElement.querySelector('.' + window.constants.messageClassNames.INVALID);
 
       if (oldInvalidMessage) {
         element.parentElement.removeChild(oldInvalidMessage);
@@ -92,7 +92,7 @@
 
     removeInvalidMessage();
 
-    message.className = window.constants.MESSAGE_CLASS_NAMES.INVALID;
+    message.className = window.constants.messageClassNames.INVALID;
 
     if (text) {
       message.textContent = text;
