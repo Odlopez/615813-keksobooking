@@ -5,10 +5,12 @@
     var xhr = new XMLHttpRequest();
     var URL = 'https://js.dump.academy/keksobooking/data';
 
-    xhr.open('GET', URL);
-    xhr.send();
     xhr.responseType = 'json';
     xhr.timeout = window.constants.ALLOWABLE_LOAD_TIME;
+
+    xhr.open('GET', URL);
+
+    xhr.send();
 
     xhr.addEventListener('load', function (evt) {
       var target = evt.target;
@@ -46,6 +48,7 @@
 
     xhr.addEventListener('load', function (evt) {
       var target = evt.target;
+
       try {
         if (target.status === window.constants.Status.SUCCESS) {
           onLoad();
