@@ -23,12 +23,12 @@
       ERROR: 'js-error-message',
     },
     DEBOUNCE_INTERVAL: 500,
-    bordersForm: {
+    formBorders: {
       FIRST: [5, 20],
       SECOND: 1,
       THIRD: [2, 4]
     },
-    priceInterval: {
+    priceIntervals: {
       MIDDLE: 10000,
       HIGH: 50000
     }

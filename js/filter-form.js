@@ -3,7 +3,7 @@
 (function () {
   window.FilterForm = function () {
     var form = document.querySelector('.map__filters');
-    var Input = {
+    var inputs = {
       type: document.querySelector('[name="housing-type"]'),
       price: document.querySelector('[name="housing-price"]'),
       rooms: document.querySelector('[name="housing-rooms"]'),
@@ -18,10 +18,10 @@
       }
     }
 
-    this.type = (Input.type.value === 'any') ? null : Input.type.value;
-    this.price = (Input.price.value === 'any') ? null : Input.price.value;
-    this.rooms = (Input.rooms.value === 'any') ? null : Input.rooms.value;
-    this.guests = (Input.guests.value === 'any') ? null : Input.guests.value;
+    this.type = (inputs.type.value === 'any') ? null : inputs.type.value;
+    this.price = (inputs.price.value === 'any') ? null : inputs.price.value;
+    this.rooms = (inputs.rooms.value === 'any') ? null : inputs.rooms.value;
+    this.guests = (inputs.guests.value === 'any') ? null : inputs.guests.value;
     this.features = features;
   };
 })();
