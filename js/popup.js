@@ -50,8 +50,7 @@
       }
     };
 
-    popup.style = window.constants.SYSTEM_MESSAGE_DATAS.POPUP_STYLE;
-    error.style = window.constants.SYSTEM_MESSAGE_DATAS.ERROR_STYLE;
+    popup.className = window.constants.messageClassNames.ERROR;
     error.textContent = message;
 
     popup.appendChild(error);
@@ -75,7 +74,7 @@
      * Удаляет сообщение об ошибке
      */
     var removeInvalidMessage = function () {
-      var oldInvalidMessage = element.parentElement.querySelector('.' + window.constants.INVALID_MESSAGE_DATAS.CLASS_NAME);
+      var oldInvalidMessage = element.parentElement.querySelector('.' + window.constants.messageClassNames.INVALID);
 
       if (oldInvalidMessage) {
         element.parentElement.removeChild(oldInvalidMessage);
@@ -93,8 +92,7 @@
 
     removeInvalidMessage();
 
-    message.className = window.constants.INVALID_MESSAGE_DATAS.CLASS_NAME;
-    message.style = window.constants.INVALID_MESSAGE_DATAS.STYLE;
+    message.className = window.constants.messageClassNames.INVALID;
 
     if (text) {
       message.textContent = text;

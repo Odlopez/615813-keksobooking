@@ -4,12 +4,14 @@
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
   var addressInput = document.querySelector('input[name="address"]');
+  var filterForm = document.querySelector('.map__filters');
 
   /**
    * Вызывает функцию создания похожих объявлений
    * @param {Array} data
    */
   var createPins = function (data) {
+    window.map.adverts = data;
     window.pin.create(data);
   };
 
@@ -56,7 +58,6 @@
 
     var onMainPinMouseup = function () {
       if (map.classList.contains('map--faded')) {
-        var filterForm = document.querySelector('.map__filters');
         var userForm = document.querySelector('.ad-form');
 
         map.classList.remove('map--faded');
@@ -139,17 +140,33 @@
     }
   };
 
+  /**
+   * Обработчик события для формы-фильтра (при изменении ее параметров)
+   */
+  var onFilterFormInput = function () {
+    window.debounce(function () {
+      var filterFormContent = new window.FilterForm();
+      window.card.delete();
+      window.pin.create(window.filter(filterFormContent));
+    });
+  };
+
+  /**
+   * Скрывает карту
+   */
   var fadeMap = function () {
     map.classList.add('map--faded');
   };
 
   document.addEventListener('click', onPinClick);
   mainPin.addEventListener('mousedown', onMainPinMousedown);
+  filterForm.addEventListener('input', onFilterFormInput);
 
   window.map = {
     onAdvertButtonCloseClick: onAdvertButtonCloseClick,
     onDocumentEscPress: onDocumentEscPress,
     fadeMap: fadeMap,
     getAddressValue: getAddressValue,
+    adverts: []
   };
 })();

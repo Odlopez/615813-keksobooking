@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   /**
    * Генерирует развернутое объявление
    * @param {Array.<advert>} advertOption
@@ -38,21 +37,21 @@
         break;
 
       case ('house'):
-        advertType = 'Дом';
+        advertType.textContent = 'Дом';
         break;
 
       default:
-        advertType = 'Дворец';
+        advertType.textContent = 'Дворец';
     }
 
-    advertCapacity.textContent = advertOption.offer.rooms + ' комнаты для ' + advertOption.offer.guests + ' гостей';
+    advertCapacity.textContent = returnRoomReport(advertOption.offer.rooms, advertOption.offer.guests);
     advertTime.textContent = 'Заезд после ' + advertOption.offer.checkin + ', выезд до ' + advertOption.offer.checkout;
 
     for (var i = 0; i < advertOption.offer.features.length; i++) {
       advertFeatures.querySelector('.popup__feature--' + advertOption.offer.features[i]).textContent = advertOption.offer.features[i];
     }
 
-    for (i = 0; i < advertFeatures.children.length; i++) {
+    for (i = advertFeatures.children.length - 1; i >= 0; i--) {
       if (advertFeatures.children[i].textContent === '') {
         advertFeatures.removeChild(advertFeatures.children[i]);
       }
@@ -77,7 +76,34 @@
   };
 
   /**
-   * Удаляет из DOM-дерева развенутое объявление
+   * Возвращает строку с информацией о комнатах и гостях с учетом правил русского языка.
+   * @param {Number} rooms
+   * @param {Number} guests
+   * @return {String}
+   */
+  var returnRoomReport = function (rooms, guests) {
+    var roomsEnding = '';
+    var guestsEnding = 'ей';
+
+    if (rooms >= window.constants.formBorders.FIRST[0] && rooms <= window.constants.formBorders.FIRST[1]) {
+      roomsEnding = '';
+    } else if (rooms % 10 === window.constants.formBorders.SECOND) {
+      roomsEnding = 'а';
+    } else if (rooms % 10 >= window.constants.formBorders.THIRD[0] && rooms % 10 <= window.constants.formBorders.THIRD[1]) {
+      roomsEnding = 'ы';
+    }
+
+    if (guests >= window.constants.formBorders.THIRD[0] && guests <= window.constants.formBorders.FIRST[1]) {
+      guestsEnding = 'ей';
+    } else if (guests % 10 === window.constants.formBorders.SECOND) {
+      guestsEnding = 'я';
+    }
+
+    return rooms + ' комнат' + roomsEnding + ' для ' + guests + ' гост' + guestsEnding;
+  };
+
+  /**
+   * Удаляет из DOM-дерева развенутое объявление.
    */
   var deleteEpandedAdvert = function () {
     var map = document.querySelector('.map');

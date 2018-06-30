@@ -5,16 +5,18 @@
     var xhr = new XMLHttpRequest();
     var URL = 'https://js.dump.academy/keksobooking/data';
 
-    xhr.open('GET', URL);
-    xhr.send();
     xhr.responseType = 'json';
     xhr.timeout = window.constants.ALLOWABLE_LOAD_TIME;
+
+    xhr.open('GET', URL);
+
+    xhr.send();
 
     xhr.addEventListener('load', function (evt) {
       var target = evt.target;
 
       try {
-        if (target.status === window.constants.SUCCESS_STATUS) {
+        if (target.status === window.constants.Status.SUCCESS) {
           onLoad(target.response);
         } else {
           onError('Статус ответа: ' + target.status + ' ' + target.statusText);
@@ -46,8 +48,9 @@
 
     xhr.addEventListener('load', function (evt) {
       var target = evt.target;
+
       try {
-        if (target.status === window.constants.SUCCESS_STATUS) {
+        if (target.status === window.constants.Status.SUCCESS) {
           onLoad();
         } else {
           onError(evt.target.status);
