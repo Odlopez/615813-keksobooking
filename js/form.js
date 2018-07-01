@@ -26,13 +26,20 @@
   var userFotoLoader = adFormField.querySelector('input[type="file"]');
   var adFormUpload = document.querySelector('.ad-form__upload');
   var flatFotoLoader = adFormUpload.querySelector('input[type="file"]');
+  var adFormHeaderPreview = document.querySelector('.ad-form-header__preview');
+  var userAvatar = adFormHeaderPreview.querySelector('img');
 
   /**
    * Сбрасывает формы до первоначального состояния
    */
   var resetForms = function () {
+    var flatFotos = document.querySelector('.ad-form__photo');
+
     userForm.reset();
     filterForm.reset();
+
+    userAvatar.src = window.constants.USER_FOTO_PREVIEW_SRC;
+    flatFotos.innerHTML = '';
 
     window.map.getAddressValue(mainPin);
 
@@ -290,9 +297,6 @@
    * Создает функцию обработчика событий, при загрузке пользователем аватарки
    */
   var onUserFotoLoaderChange = function () {
-    var adFormHeaderPreview = document.querySelector('.ad-form-header__preview');
-    var userAvatar = adFormHeaderPreview.querySelector('img');
-
     /**
      * Добавляет фото пользователя, при создании им объявления, в DOM
      * @param {Event} evt
