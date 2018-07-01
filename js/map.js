@@ -99,7 +99,7 @@
       return;
     }
 
-    var elem = evt.target.closest('button');
+    var elem = evt.target.closest('.map__pin');
 
     var mapContainer = document.querySelector('.map__filters-container');
 
@@ -158,7 +158,7 @@
     map.classList.add('map--faded');
   };
 
-  document.addEventListener('click', onPinClick);
+  map.addEventListener('click', onPinClick);
   mainPin.addEventListener('mousedown', onMainPinMousedown);
   filterForm.addEventListener('input', onFilterFormInput);
 
