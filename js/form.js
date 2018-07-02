@@ -66,8 +66,8 @@
    * Коллбэк для успешно отправленной формы
    */
   var onLoadForm = function () {
-    resetForms();
     disablesAddressInput();
+    resetPage();
 
     success.classList.remove('hidden');
 
@@ -168,6 +168,33 @@
   };
 
   /**
+   * Сбрасывает страницу до первоначального состояния
+   */
+  var resetPage = function () {
+    var mapPins = document.querySelector('.map__pins');
+    var pins = mapPins.querySelectorAll('.map__pin');
+
+    mainPin.style.top = window.constants.MAIN_PIN_COORDINATES[1] + 'px';
+    mainPin.style.left = window.constants.MAIN_PIN_COORDINATES[0] + 'px';
+    priceInput.style.boxShadow = 'none';
+    titleInput.style.boxShadow = 'none';
+
+    resetForms();
+
+    for (var i = pins.length - 1; i > 0; i--) {
+      if (pins[i] !== mainPin) {
+        mapPins.removeChild(pins[i]);
+      }
+    }
+
+    window.map.fadeMap();
+    userForm.classList.add('ad-form--disabled');
+    disablesChildren(userForm);
+    getMessageErrorInputTitle();
+    getMessageErrorInputPrice();
+  };
+
+  /**
    * Создает сообщение об ошибке, при некорректном заполнении поля с заголовком объявления
    */
   var getMessageErrorInputTitle = function () {
@@ -212,7 +239,6 @@
    */
   var onTypeSelectChange = function () {
     priceInput.min = TYPE_SELECT_PRICE[typeSelect.value];
-    priceInput.value = TYPE_SELECT_PRICE[typeSelect.value];
     priceInput.placeholder = TYPE_SELECT_PRICE[typeSelect.value];
 
     getMessageErrorInputPrice();
@@ -272,25 +298,7 @@
   var onResetButtonClick = function (evt) {
     evt.preventDefault();
 
-    var mapPins = document.querySelector('.map__pins');
-    var pins = mapPins.querySelectorAll('.map__pin');
-
-    mainPin.style.top = window.constants.MAIN_PIN_COORDINATES[1] + 'px';
-    mainPin.style.left = window.constants.MAIN_PIN_COORDINATES[0] + 'px';
-    priceInput.style.boxShadow = 'none';
-    titleInput.style.boxShadow = 'none';
-
-    resetForms();
-
-    for (var i = pins.length - 1; i > 0; i--) {
-      if (pins[i] !== mainPin) {
-        mapPins.removeChild(pins[i]);
-      }
-    }
-
-    window.map.fadeMap();
-    userForm.classList.add('ad-form--disabled');
-    disablesChildren(userForm);
+    resetPage();
   };
 
   /**
@@ -305,7 +313,7 @@
       userAvatar.src = evt.currentTarget.result;
     };
 
-    window.getFotoSRC(userFotoLoader.files[0], addUserFoto);
+    window.foto.check(userFotoLoader.files[0], addUserFoto);
   };
 
   /**
@@ -328,7 +336,7 @@
     };
 
     for (var i = 0; i < files.length; i++) {
-      window.getFotoSRC(files[i], addFlatFoto);
+      window.foto.check(files[i], addFlatFoto);
     }
   };
 
@@ -351,7 +359,6 @@
   window.form = {
     enables: enablesChildren,
     disables: disablesChildren,
-    onTypeSelectChange: onTypeSelectChange,
     onRoomsSelectChange: onRoomsSelectChange
   };
 })();

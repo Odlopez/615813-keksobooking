@@ -67,6 +67,11 @@
     document.addEventListener('click', onDocumentClick);
   };
 
+  /**
+   * Создает DOM-элемент с сообщением об ошибке
+   * @param {Node} element
+   * @param {String} text
+   */
   var createInvalidMessage = function (element, text) {
     var message = document.createElement('span');
 

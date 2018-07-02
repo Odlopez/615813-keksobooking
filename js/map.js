@@ -66,7 +66,6 @@
         window.card.delete();
         window.form.enables(filterForm);
         window.form.enables(userForm);
-        window.form.onTypeSelectChange();
         window.form.onRoomsSelectChange();
 
         window.backend.load(createPins, onLoadDataError);

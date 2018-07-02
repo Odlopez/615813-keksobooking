@@ -32,6 +32,7 @@
       MIDDLE: 10000,
       HIGH: 50000
     },
-    USER_FOTO_PREVIEW_SRC: 'img/muffin-grey.svg'
+    USER_FOTO_PREVIEW_SRC: 'img/muffin-grey.svg',
+    IMAGE_FILE_TYPES: ['gif', 'jpg', 'jpeg', 'png']
   };
 })();
