@@ -22,13 +22,24 @@
   var mainPin = document.querySelector('.map__pin--main');
   var success = document.querySelector('.success');
   var popupVisibilityTime = 4000;
+  var adFormField = document.querySelector('.ad-form__field');
+  var userFotoLoader = adFormField.querySelector('input[type="file"]');
+  var adFormUpload = document.querySelector('.ad-form__upload');
+  var flatFotoLoader = adFormUpload.querySelector('input[type="file"]');
+  var adFormHeaderPreview = document.querySelector('.ad-form-header__preview');
+  var userAvatar = adFormHeaderPreview.querySelector('img');
 
   /**
    * Сбрасывает формы до первоначального состояния
    */
   var resetForms = function () {
+    var flatFotos = document.querySelector('.ad-form__photo');
+
     userForm.reset();
     filterForm.reset();
+
+    userAvatar.src = window.constants.USER_FOTO_PREVIEW_SRC;
+    flatFotos.innerHTML = '';
 
     window.map.getAddressValue(mainPin);
 
@@ -282,6 +293,45 @@
     disablesChildren(userForm);
   };
 
+  /**
+   * Создает функцию обработчика событий, при загрузке пользователем аватарки
+   */
+  var onUserFotoLoaderChange = function () {
+    /**
+     * Добавляет фото пользователя, при создании им объявления, в DOM
+     * @param {Event} evt
+     */
+    var addUserFoto = function (evt) {
+      userAvatar.src = evt.currentTarget.result;
+    };
+
+    window.getFotoSRC(userFotoLoader.files[0], addUserFoto);
+  };
+
+  /**
+   * Создает функцию обработчика событий, при загрузке пользователем фотографий жилья
+   */
+  var onFlatFotoLoader = function () {
+    var files = flatFotoLoader.files;
+
+    /**
+     * Добавляет и отрисовывает фотографии жилья, при создании пользователем объявления
+     * @param {Event} evt
+     */
+    var addFlatFoto = function (evt) {
+      var adFormPhoto = document.querySelector('.ad-form__photo');
+      var foto = document.createElement('img');
+
+      foto.src = evt.currentTarget.result;
+
+      adFormPhoto.appendChild(foto);
+    };
+
+    for (var i = 0; i < files.length; i++) {
+      window.getFotoSRC(files[i], addFlatFoto);
+    }
+  };
+
   disablesChildren(filterForm);
   disablesChildren(userForm);
 
@@ -295,6 +345,8 @@
   priceInput.addEventListener('input', getMessageErrorInputPrice);
   titleInput.addEventListener('invalid', getMessageErrorInputTitle);
   priceInput.addEventListener('invalid', getMessageErrorInputPrice);
+  userFotoLoader.addEventListener('change', onUserFotoLoaderChange);
+  flatFotoLoader.addEventListener('change', onFlatFotoLoader);
 
   window.form = {
     enables: enablesChildren,

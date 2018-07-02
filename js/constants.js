@@ -10,7 +10,7 @@
     MAIN_PIN_WIDTH: 64,
     MAIN_PIN_HEIGHT: 83,
     MAIN_PIN_COORDINATES: [570, 375],
-    ALLOWABLE_LOAD_TIME: 2000,
+    ALLOWABLE_LOAD_TIME: 20000,
     Status: {
       READY_STATE_UNSENT: 0,
       SUCCESS: 200,
@@ -31,6 +31,7 @@
     priceIntervals: {
       MIDDLE: 10000,
       HIGH: 50000
-    }
+    },
+    USER_FOTO_PREVIEW_SRC: 'img/muffin-grey.svg'
   };
 })();
