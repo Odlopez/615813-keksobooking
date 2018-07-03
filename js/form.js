@@ -28,13 +28,12 @@
   var flatFotoLoader = adFormUpload.querySelector('input[type="file"]');
   var adFormHeaderPreview = document.querySelector('.ad-form-header__preview');
   var userAvatar = adFormHeaderPreview.querySelector('img');
+  var flatFotos = document.querySelector('.ad-form__photo');
 
   /**
    * Сбрасывает формы до первоначального состояния
    */
   var resetForms = function () {
-    var flatFotos = document.querySelector('.ad-form__photo');
-
     userForm.reset();
     filterForm.reset();
 

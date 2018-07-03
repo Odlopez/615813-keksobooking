@@ -2,8 +2,8 @@
 
 (function () {
   var load = function (onLoad, onError) {
-    var xhr = new XMLHttpRequest();
     var URL = 'https://js.dump.academy/keksobooking/data';
+    var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
     xhr.timeout = window.constants.ALLOWABLE_LOAD_TIME;
@@ -36,8 +36,8 @@
   };
 
   var upload = function (data, onLoad, onError) {
-    var xhr = new XMLHttpRequest();
     var URL = 'https://js.dump.academy/keksobooking';
+    var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
     xhr.timeout = window.constants.ALLOWABLE_LOAD_TIME;

@@ -100,6 +100,10 @@
 
     var elem = evt.target.closest('.map__pin');
 
+    if (!elem) {
+      return;
+    }
+
     var mapContainer = document.querySelector('.map__filters-container');
 
     for (var i = 0; i < window.pin.advertOptions.length; i++) {

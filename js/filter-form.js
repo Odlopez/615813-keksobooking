@@ -1,15 +1,16 @@
 'use strict';
 
 (function () {
+  var form = document.querySelector('.map__filters');
+  var inputs = {
+    type: document.querySelector('[name="housing-type"]'),
+    price: document.querySelector('[name="housing-price"]'),
+    rooms: document.querySelector('[name="housing-rooms"]'),
+    guests: document.querySelector('[name="housing-guests"]')
+  };
+  var featuresFieldset = form.querySelector('.map__features');
+
   window.FilterForm = function () {
-    var form = document.querySelector('.map__filters');
-    var inputs = {
-      type: document.querySelector('[name="housing-type"]'),
-      price: document.querySelector('[name="housing-price"]'),
-      rooms: document.querySelector('[name="housing-rooms"]'),
-      guests: document.querySelector('[name="housing-guests"]')
-    };
-    var featuresFieldset = form.querySelector('.map__features');
     var features = [];
 
     for (var i = 0; i < featuresFieldset.children.length; i++) {
