@@ -189,8 +189,19 @@
     window.map.fadeMap();
     userForm.classList.add('ad-form--disabled');
     disablesChildren(userForm);
-    getMessageErrorInputTitle();
-    getMessageErrorInputPrice();
+    cancelError(titleInput);
+    cancelError(priceInput);
+    window.popup.createInvalidMessage(titleInput, '');
+    window.popup.createInvalidMessage(priceInput, '');
+  };
+
+  /**
+   * Функция снимает ошибку с элемента
+   * @param {Node} elem
+   */
+  var cancelError = function (elem) {
+    elem.setCustomValidity('');
+    elem.style.boxShadow = 'none';
   };
 
   /**
@@ -206,8 +217,7 @@
     } else if (titleInput.validity.valueMissing) {
       titleInput.setCustomValidity('Сообщение не должно быть пустым');
     } else {
-      titleInput.setCustomValidity('');
-      titleInput.style.boxShadow = 'none';
+      cancelError(titleInput);
     }
 
     window.popup.createInvalidMessage(titleInput, titleInput.validationMessage);
@@ -226,8 +236,7 @@
     } else if (priceInput.validity.valueMissing) {
       priceInput.setCustomValidity('Введите цену');
     } else {
-      priceInput.setCustomValidity('');
-      priceInput.style.boxShadow = 'none';
+      cancelError(priceInput);
     }
 
     window.popup.createInvalidMessage(priceInput, priceInput.validationMessage);
@@ -339,6 +348,18 @@
     }
   };
 
+  /**
+   * Подготавливает форму, выставляя значения по умолчанию
+   */
+  var prepareForm = function () {
+    onRoomsSelectChange();
+    onTypeSelectChange();
+    cancelError(titleInput);
+    cancelError(priceInput);
+    window.popup.createInvalidMessage(titleInput, '');
+    window.popup.createInvalidMessage(priceInput, '');
+  };
+
   disablesChildren(filterForm);
   disablesChildren(userForm);
 
@@ -358,6 +379,6 @@
   window.form = {
     enables: enablesChildren,
     disables: disablesChildren,
-    onRoomsSelectChange: onRoomsSelectChange
+    prepareForm: prepareForm
   };
 })();

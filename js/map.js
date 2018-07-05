@@ -16,6 +16,7 @@
     window.pin.create(data);
 
     window.form.enables(filterForm);
+    filterForm.reset();
     window.form.enables(userForm);
   };
 
@@ -66,7 +67,7 @@
         userForm.classList.remove('ad-form--disabled');
 
         window.card.delete();
-        window.form.onRoomsSelectChange();
+        window.form.prepareForm();
 
         window.backend.load(createPins, onLoadDataError);
       }
@@ -163,7 +164,7 @@
 
   map.addEventListener('click', onPinClick);
   mainPin.addEventListener('mousedown', onMainPinMousedown);
-  filterForm.addEventListener('input', onFilterFormInput);
+  filterForm.addEventListener('change', onFilterFormInput);
 
   window.map = {
     onAdvertButtonCloseClick: onAdvertButtonCloseClick,
