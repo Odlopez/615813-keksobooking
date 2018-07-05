@@ -5,6 +5,7 @@
   var mainPin = document.querySelector('.map__pin--main');
   var addressInput = document.querySelector('input[name="address"]');
   var filterForm = document.querySelector('.map__filters');
+  var userForm = document.querySelector('.ad-form');
 
   /**
    * Вызывает функцию создания похожих объявлений
@@ -13,6 +14,9 @@
   var createPins = function (data) {
     window.map.adverts = data;
     window.pin.create(data);
+
+    window.form.enables(filterForm);
+    window.form.enables(userForm);
   };
 
   /**
@@ -58,14 +62,10 @@
 
     var onMainPinMouseup = function () {
       if (map.classList.contains('map--faded')) {
-        var userForm = document.querySelector('.ad-form');
-
         map.classList.remove('map--faded');
         userForm.classList.remove('ad-form--disabled');
 
         window.card.delete();
-        window.form.enables(filterForm);
-        window.form.enables(userForm);
         window.form.onRoomsSelectChange();
 
         window.backend.load(createPins, onLoadDataError);
