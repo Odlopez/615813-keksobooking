@@ -13,11 +13,11 @@
   window.FilterForm = function () {
     var features = [];
 
-    for (var i = 0; i < featuresFieldset.children.length; i++) {
-      if (featuresFieldset.children[i].checked) {
-        features.push(featuresFieldset.children[i].value);
+    Array.prototype.slice.apply(featuresFieldset.children).forEach(function (it) {
+      if (it.checked) {
+        features.push(it.value);
       }
-    }
+    });
 
     this.type = (inputs.type.value === 'any') ? null : inputs.type.value;
     this.price = (inputs.price.value === 'any') ? null : inputs.price.value;

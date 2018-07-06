@@ -27,32 +27,27 @@
    * @param {Array} data
    */
   var createsSimilarAdverts = function (data) {
-    advertOptions.length = 0;
-
     var mapPins = document.querySelector('.map__pins');
-
-    for (var i = 0; i < data.length; i++) {
-      if (i > ADVERTS_QUANTYTI - 1) {
-        break;
-      }
-
-      advertOptions.push(data[i]);
-    }
-
     var fragment = document.createDocumentFragment();
 
-    for (i = 0; i < advertOptions.length; i++) {
-      var pinItem = createPin(advertOptions[i]);
+    advertOptions.length = 0;
+
+    data.slice(0, ADVERTS_QUANTYTI).forEach(function (it) {
+      advertOptions.push(it);
+    });
+
+    advertOptions.forEach(function (it) {
+      var pinItem = createPin(it);
 
       fragment.appendChild(pinItem);
-      advertOptions[i].element = fragment.lastChild;
-    }
+      it.element = fragment.lastChild;
+    });
 
-    for (i = mapPins.childElementCount - 1; i > 0; i--) {
-      if (mapPins.children[i] && mapPins.children[i].className === 'map__pin') {
-        mapPins.removeChild(mapPins.children[i]);
+    Array.prototype.slice.apply(mapPins.children).forEach(function (it) {
+      if (it && it.className === 'map__pin') {
+        mapPins.removeChild(it);
       }
-    }
+    });
 
     mapPins.appendChild(fragment);
   };

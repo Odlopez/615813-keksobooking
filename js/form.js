@@ -151,9 +151,9 @@
    * @param {Node} element
    */
   var disablesChildren = function (element) {
-    for (var i = 0; i < element.children.length; i++) {
-      element.children[i].disabled = true;
-    }
+    Array.prototype.slice.apply(element.children).forEach(function (it) {
+      it.disabled = true;
+    });
   };
 
   /**
@@ -161,9 +161,9 @@
    * @param {Node} element
    */
   var enablesChildren = function (element) {
-    for (var i = 0; i < element.children.length; i++) {
-      element.children[i].disabled = false;
-    }
+    Array.prototype.slice.apply(element.children).forEach(function (it) {
+      it.disabled = false;
+    });
   };
 
   /**
@@ -180,14 +180,15 @@
 
     resetForms();
 
-    for (var i = pins.length - 1; i > 0; i--) {
-      if (pins[i] !== mainPin) {
-        mapPins.removeChild(pins[i]);
+    pins.forEach(function (it) {
+      if (it !== mainPin) {
+        mapPins.removeChild(it);
       }
-    }
+    });
 
     window.map.fadeMap();
     userForm.classList.add('ad-form--disabled');
+    disablesChildren(filterForm);
     disablesChildren(userForm);
     cancelError(titleInput);
     cancelError(priceInput);
@@ -259,11 +260,11 @@
   var onTimeSelectChange = function (evt) {
     var changeInput = (evt.target === timeInSelect) ? timeOutSelect : timeInSelect;
 
-    for (var i = 0; i < changeInput.children.length; i++) {
-      if (changeInput.children[i].value === evt.target.value) {
-        changeInput.children[i].selected = 'true';
+    Array.prototype.slice.apply(changeInput.children).forEach(function (it) {
+      if (it.value === evt.target.value) {
+        it.selected = 'true';
       }
-    }
+    });
   };
 
   /**
@@ -272,18 +273,18 @@
   var onRoomsSelectChange = function () {
     var value = (roomsSelect.value === '100') ? '0' : roomsSelect.value;
 
-    for (var i = 0; i < capacitySelect.children.length; i++) {
-      if (capacitySelect.children[i].value > value) {
-        capacitySelect.children[i].style.display = 'none';
+    Array.prototype.slice.apply(capacitySelect.children).forEach(function (it) {
+      if (it.value > value) {
+        it.style.display = 'none';
       } else {
-        capacitySelect.children[i].style.display = 'initial';
+        it.style.display = 'initial';
       }
 
-      if (capacitySelect.children[i].value === '0') {
-        capacitySelect.children[i].style.display = (value === '0') ? 'initial' : 'none';
+      if (it.value === '0') {
+        it.style.display = (value === '0') ? 'initial' : 'none';
         capacitySelect.selectedIndex = (value === '0') ? 3 : 2;
       }
-    }
+    });
   };
 
   /**
@@ -343,9 +344,9 @@
       adFormPhoto.appendChild(foto);
     };
 
-    for (var i = 0; i < files.length; i++) {
-      window.foto.check(files[i], addFlatFoto);
-    }
+    Array.prototype.slice.apply(files).forEach(function (it) {
+      window.foto.check(it, addFlatFoto);
+    });
   };
 
   /**

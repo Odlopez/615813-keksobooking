@@ -107,20 +107,20 @@
 
     var mapContainer = document.querySelector('.map__filters-container');
 
-    for (var i = 0; i < window.pin.advertOptions.length; i++) {
-      window.pin.advertOptions[i].element.classList.remove('map__pin--active');
+    window.pin.advertOptions.forEach(function (it) {
+      it.element.classList.remove('map__pin--active');
 
-      if (elem === window.pin.advertOptions[i].element) {
-        window.card.delete();
-
+      if (elem === it.element) {
         var fragment = document.createDocumentFragment();
 
-        fragment.appendChild(window.card.create(window.pin.advertOptions[i], window.map.onAdvertButtonCloseClick));
+        window.card.delete();
+
+        fragment.appendChild(window.card.create(it, window.map.onAdvertButtonCloseClick));
         map.insertBefore(fragment, mapContainer);
 
         document.addEventListener('keydown', window.map.onDocumentEscPress);
       }
-    }
+    });
 
     if (!elem.classList.contains('map__pin--main')) {
       elem.classList.add('map__pin--active');

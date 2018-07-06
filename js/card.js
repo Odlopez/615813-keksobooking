@@ -47,25 +47,25 @@
     advertCapacity.textContent = returnRoomReport(advertOption.offer.rooms, advertOption.offer.guests);
     advertTime.textContent = 'Заезд после ' + advertOption.offer.checkin + ', выезд до ' + advertOption.offer.checkout;
 
-    for (var i = 0; i < advertOption.offer.features.length; i++) {
-      advertFeatures.querySelector('.popup__feature--' + advertOption.offer.features[i]).textContent = advertOption.offer.features[i];
-    }
+    advertOption.offer.features.forEach(function (it) {
+      advertFeatures.querySelector('.popup__feature--' + it).textContent = it;
+    });
 
-    for (i = advertFeatures.children.length - 1; i >= 0; i--) {
-      if (advertFeatures.children[i].textContent === '') {
-        advertFeatures.removeChild(advertFeatures.children[i]);
+    Array.prototype.slice.apply(advertFeatures.children).forEach(function (it) {
+      if (it.textContent === '') {
+        advertFeatures.removeChild(it);
       }
-    }
+    });
 
     advertDescription.textContent = advertOption.offer.description;
 
-    for (i = 0; i < advertOption.offer.photos.length; i++) {
+    advertOption.offer.photos.forEach(function (it) {
       var photo = advertPhotos.children[0].cloneNode();
 
-      photo.src = advertOption.offer.photos[i];
+      photo.src = it;
 
       advertPhotos.appendChild(photo);
-    }
+    });
 
     advertPhotos.removeChild(advertPhotos.children[0]);
     advertAvatar.src = advertOption.author.avatar;
@@ -116,15 +116,15 @@
       advertButtonClose.removeEventListener('click', window.map.onAdvertButtonCloseClick);
       document.removeEventListener('keydown', window.map.onDocumentEscPress);
 
-      for (var i = map.children.length - 1; i > 0; i--) {
-        if (map.children[i] === expandedAdvert) {
-          map.removeChild(map.children[i]);
+      Array.prototype.slice.apply(map.children).forEach(function (it) {
+        if (it === expandedAdvert) {
+          map.removeChild(it);
         }
-      }
+      });
 
-      for (i = 0; i < mapPins.children.length; i++) {
-        mapPins.children[i].classList.remove('map__pin--active');
-      }
+      Array.prototype.slice.apply(mapPins.children).forEach(function (it) {
+        it.classList.remove('map__pin--active');
+      });
     }
   };
 
